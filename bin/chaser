@@ -38,6 +38,10 @@ opts = OptionParser.new do |opts|
     puts "Setting timeout at #{timeout} seconds."
   end
 
+  opts.on("-r", "--random-seed SEED", "Random seed number (under development)") do |seed|
+    srand(seed.to_i)
+  end
+
   opts.on("-h", "--help", "Show this message") do |opt|
     puts opts
     exit 0

@@ -17,6 +17,7 @@ class TestUnitChaser < Chaser
 
   @@test_pattern = 'test/test_*.rb'
   @@tests_loaded = false
+  @@test_runner_mediator = nil
 
   def self.test_pattern=(value)
     @@test_pattern = value
@@ -115,9 +116,29 @@ class TestUnitChaser < Chaser
     self.class.load_test_files unless @@tests_loaded
   end
 
+  #Current thoughts:
+  ## It doesn't print how many tests failed or their error messages
+  ## The test runner mediator is only created once. Are there any downsides for this?
+
   def tests_pass?
+    if @@test_runner_mediator.nil?
+      require "test/unit/collector/objectspace"
+
+      obj_sp = Test::Unit::Collector::ObjectSpace.new
+      test_suite = obj_sp.collect
+
+      require "test/unit/ui/testrunnermediator"
+
+      @@test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
+      @@test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {throw :stop_test_runner}
+    end
+
     silence_stream do
-      result = Test::Unit::AutoRunner.run
+      result = false
+      catch (:stop_test_runner) do
+        result = @@test_runner_mediator.run_suite
+      end
+
       ARGV.clear
       result
     end

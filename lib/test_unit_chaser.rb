@@ -124,7 +124,8 @@ class TestUnitChaser < Chaser
   def tests_pass?
     if @@test_runner_mediator.nil?
       obj_sp = Test::Unit::Collector::ObjectSpace.new
-      test_suite = obj_sp.collect
+      test_suite = HeckleFriendlyTestSuite.new("Heckle friendly test suite")
+      test_suite << obj_sp.collect
 
       @@test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
       @@test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {throw :stop_test_runner}
@@ -140,4 +141,47 @@ class TestUnitChaser < Chaser
       result
     end
   end
+end
+
+class HeckleFriendlyTestSuite < Test::Unit::TestSuite
+  def initialize(*args)
+    @test_method_times = Hash.new(0)
+    super(*args)
+  end
+
+  # Runs the tests contained in this TestSuite.
+
+  # Normally, this would ask each test, which may be a test suite containing other tests,
+  # to run itself. However, we want to run the fastest (and most likely to fail) methods
+  # first, regardless of which suite they're in
+
+  # To do: build a more sophisticated approach to weigh up how long a method takes, and
+  # how likely it is to fail
+
+  def run(result, &progress_block)
+    yield(STARTED, name)
+    test_cases = find_test_cases(@tests)
+    test_cases = test_cases.sort_by{|test| @test_method_times[test.name]}
+    test_cases.each do |test|
+      @test_method_times[test.name] = @test_method_times[test.name] * 0.5 #In case the test fails
+      start_time = Time.now
+      test.run(result, &progress_block)
+      @test_method_times[test.name] = Time.now - start_time
+    end
+    yield(FINISHED, name)
+  end
+
+  def find_test_cases(tests)
+    result = []
+    tests.each do |test|
+      if test.respond_to?(:tests)
+        result += find_test_cases(test.tests)
+      else
+        result << test
+      end
+    end
+    result
+  end
+  private :find_test_cases
+
 end

@@ -1,38 +1,31 @@
-= heckle
+= chaser
 
-* http://www.rubyforge.org/projects/seattlerb
-* http://seattlerb.rubyforge.org/heckle
+* Web site coming real soon now
 
 == DESCRIPTION:
 
-Heckle is unit test sadism(tm) at it's core. Heckle is a mutation tester. It modifies your code and runs your tests to make sure they fail. The idea is that if code can be changed and your tests don't notice, either that code isn't being covered or it doesn't do anything.
+Chaser is unit test sadism(tm), like Seattlerb's Heckle. It's more or less mutation testing, except that rather than mutating every line of code it can get its claws into, it merely modifies the return value of targeted methods. If the unit tests don't notice the modified return values, or the program going haywire as a result of using those modified return values, then they aren't doing their jobs properly.
 
-It's like hiring a white-hat hacker to try to break into your server and making sure you detect it. You learn the most by trying to break things and watching the outcome in an act of unit test sadism.
+Unit test sadism is a trademark of Ryan Davis and Kevin Clark, and is used without permission.
 
 == FEATURES/PROBLEMS:
 
-* Mutates booleans, numbers, strings, symbols, ranges, regexes and branches (if, while, unless, until)
-* Able to mutate entire classes, or individual methods
-* Can not yet mutate class methods
-
-== SYNOPSYS:
-
-    % heckle -v Autotest
+* It only mutates the return values of methods.
+* It should be able to mutate class methods, and work in ruby 1.9 or Windows.
 
 == REQUIREMENTS:
 
-* ruby2ruby 1.1.2 or greater
-* ParseTree 1.6.1 or greater
+* None!
 
 == INSTALL:
 
-* sudo gem install heckle
+* sudo gem install agrimm-chaser
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2006-2008 Ryan Davis and Kevin Clark
+Copyright (c) 2006-2009 Ryan Davis and Kevin Clark and Andrew Grimm
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
-require 'test_unit_heckler'
+require 'test_unit_chaser'
 require 'optparse'
 
 force = false

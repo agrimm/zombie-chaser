@@ -2,9 +2,8 @@ History.txt
 Manifest.txt
 README.txt
 Rakefile
-bin/heckle
-lib/autotest/heckle.rb
-lib/heckle.rb
-lib/test_unit_heckler.rb
-test/fixtures/heckled.rb
-test/test_heckle.rb
+bin/chaser
+lib/chaser.rb
+lib/test_unit_chaser.rb
+test/fixtures/chased.rb
+test/test_chaser.rb

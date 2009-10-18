@@ -3,8 +3,8 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'test/unit/testcase'
 require 'test/unit' if $0 == __FILE__
-require 'test_unit_heckler'
-require 'heckled'
+require 'test_unit_chaser'
+require 'chased'
 
 class TestChaser < Chaser
   def rand(*args)

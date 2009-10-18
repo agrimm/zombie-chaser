@@ -27,7 +27,7 @@ class Chaser
   ##
   # Path to the bit bucket.
 
-  NULL_PATH = WINDOZE ? 'NUL:' : '/dev/null' #TODO use this constant in silence_stream
+  NULL_PATH = WINDOZE ? 'NUL:' : '/dev/null'
 
   ##
   # Class being chased
@@ -268,7 +268,7 @@ class Chaser
     return yield if @@debug
 
     begin
-      dead = File.open("/dev/null", "w")
+      dead = File.open(Chaser::NULL_PATH, "w")
 
       $stdout.flush
       $stderr.flush

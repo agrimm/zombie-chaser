@@ -3,29 +3,23 @@
 require 'test/unit/autorunner'
 require 'test/unit/testcase'
 require 'heckle'
-require 'zentest_mapping'
 
 $: << 'lib' << 'test'
 
 # Make sure test/unit doesn't swallow our timeout
 begin
-  Test::Unit::TestCase::PASSTHROUGH_EXCEPTIONS << Heckle::Timeout
+  Test::Unit::TestCase::PASSTHROUGH_EXCEPTIONS << Chaser::Timeout
 rescue NameError
   # ignore
 end
 
-class TestUnitHeckler < Heckle
+class TestUnitChaser < Chaser
 
   @@test_pattern = 'test/test_*.rb'
   @@tests_loaded = false
-  @@focus = false
 
   def self.test_pattern=(value)
     @@test_pattern = value
-  end
-
-  def self.focus=(value)
-    @@focus = value
   end
 
   def self.load_test_files
@@ -33,8 +27,7 @@ class TestUnitHeckler < Heckle
     Dir.glob(@@test_pattern).each {|test| require test}
   end
 
-  def self.validate(klass_name, method_name = nil,
-                    nodes = Heckle::MUTATABLE_NODES, force = false)
+  def self.validate(klass_name, method_name = nil, force = false)
     load_test_files
     klass = klass_name.to_class
 
@@ -50,12 +43,12 @@ class TestUnitHeckler < Heckle
 
     initial_time = Time.now
 
-    heckle = self.new(klass_name)
+    chaser = self.new(klass_name)
 
-    passed = heckle.tests_pass?
+    passed = chaser.tests_pass?
 
     unless force or passed then
-      abort "Initial run of tests failed... fix and run heckle again"
+      abort "Initial run of tests failed... fix and run chaser again"
     end
 
     if self.guess_timeout? then
@@ -77,20 +70,19 @@ class TestUnitHeckler < Heckle
 
     counts = Hash.new(0)
     methods.sort.each do |method_name|
-      result = self.new(klass_name, method_name, nodes).validate
+      result = self.new(klass_name, method_name).validate
       counts[result] += 1
     end
     all_good = counts[false] == 0
 
-    puts "Heckle Results:"
+    puts "Chaser Results:"
     puts
     puts "Passed    : %3d" % counts[true]
     puts "Failed    : %3d" % counts[false]
-    puts "Thick Skin: %3d" % counts[nil]
     puts
 
     if all_good then
-      puts "All heckling was thwarted! YAY!!!"
+      puts "All chasing was thwarted! YAY!!!"
     else
       puts "Improve the tests and try again."
     end
@@ -98,20 +90,13 @@ class TestUnitHeckler < Heckle
     all_good
   end
 
-  def initialize(klass_name=nil, method_name=nil, nodes=Heckle::MUTATABLE_NODES)
+  def initialize(klass_name=nil, method_name=nil)
     super
     self.class.load_test_files unless @@tests_loaded
   end
 
-  include ZenTestMapping
-
   def tests_pass?
     silence_stream do
-      if @@focus and @method_name then
-        name = normal_to_test @method_name.to_s
-        ARGV.clear
-        ARGV << "--name=/#{name}/"
-      end
       result = Test::Unit::AutoRunner.run
       ARGV.clear
       result

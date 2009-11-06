@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'test/unit/autorunner'
-require 'test/unit/testcase'
+require "test/unit/collector/objectspace"
+require "test/unit/ui/testrunnermediator"
 require 'chaser'
 
 $: << 'lib' << 'test'
@@ -119,15 +119,12 @@ class TestUnitChaser < Chaser
   #Current thoughts:
   ## It doesn't print how many tests failed or their error messages
   ## The test runner mediator is only created once. Are there any downsides for this?
+  ## Does --name=/#{name}/ work any more?
 
   def tests_pass?
     if @@test_runner_mediator.nil?
-      require "test/unit/collector/objectspace"
-
       obj_sp = Test::Unit::Collector::ObjectSpace.new
       test_suite = obj_sp.collect
-
-      require "test/unit/ui/testrunnermediator"
 
       @@test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
       @@test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {throw :stop_test_runner}

@@ -24,6 +24,7 @@ class TestUnitChaser < Chaser
 
   def self.load_test_files
     @@tests_loaded = true
+    raise "Can't detect any files in test pattern \"#{@@test_pattern}\"#{WINDOZE ? " Are you remembering to use forward slashes?" : ""}" if Dir.glob(@@test_pattern).empty?
     Dir.glob(@@test_pattern).each {|test| require test}
   end
 

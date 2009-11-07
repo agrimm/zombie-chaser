@@ -74,3 +74,12 @@ class ChaserTestCase < Test::Unit::TestCase
 end
 
 
+class TestUnitChaserCase < Test::Unit::TestCase
+  def test_detects_invalid_glob
+    incorrect_glob = "test\test_chaser.rb"
+    TestUnitChaser.test_pattern = incorrect_glob
+    assert_raise(RuntimeError, "Can't detect an incorrect glob") do
+      TestUnitChaser.load_test_files
+    end
+  end
+end

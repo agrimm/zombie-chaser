@@ -18,7 +18,7 @@ opts = OptionParser.new do |opts|
   end
 
   opts.on("-t", "--tests TEST_PATTERN",
-          "Location of tests (glob)") do |pattern|
+          "Location of tests (glob). Unix-style even on Windows, so use forward slashes.") do |pattern|
     TestUnitChaser.test_pattern = pattern
   end
 

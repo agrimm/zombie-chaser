@@ -2,6 +2,7 @@ task :default => [:test]
 
 begin
   require 'jeweler'
+  require File.dirname(__FILE__) + "/lib/chaser.rb"
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "chaser"
     gemspec.summary = "Unit test sadism, with less masochism"
@@ -9,6 +10,7 @@ begin
     gemspec.email = "andrew.j.grimm@gmail.com"
     gemspec.authors = ["Andrew Grimm", "Ryan Davis", "Eric Hodel", "Kevin Clark"]
     gemspec.add_dependency('test-unit') #Ruby 1.9 doesn't have full test-unit in the standard library.
+    gemspec.version = Chaser::VERSION
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

@@ -1,7 +1,3 @@
-= chaser
-
-* Web site coming real soon now
-
 == DESCRIPTION:
 
 Chaser is unit test sadism(tm), like Seattlerb's Heckle. It's more or less mutation testing, except that rather than mutating every line of code it can get its claws into, it merely modifies the return value of targeted methods. If the unit tests don't notice the modified return values, or the program going haywire as a result of using those modified return values, then they aren't doing their jobs properly.
@@ -11,15 +7,16 @@ Unit test sadism is a trademark of Ryan Davis and Kevin Clark, and is used witho
 == FEATURES/PROBLEMS:
 
 * It only mutates the return values of methods.
-* It should be able to mutate class methods, and work in ruby 1.9 or Windows.
+* It works in ruby 1.9, Windows, and JRuby.
 
 == REQUIREMENTS:
 
-* None!
+* Test/Unit. Ruby 1.9 needs the test-unit gem, while ruby 1.8 doesn't require anything!
 
 == INSTALL:
 
-* sudo gem install agrimm-chaser
+* Add gemcutter as a gem source.
+* sudo gem install chaser
 
 == LICENSE:
 

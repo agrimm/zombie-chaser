@@ -38,7 +38,7 @@ class TestUnitChaser < Chaser
       if method_name =~ /self\./
         abort "Unknown method: #{klass_name}.#{method_name.gsub('self.', '')}" unless klass_methods.include? method_name
       else
-        abort "Unknown method: #{klass_name}##{method_name}" unless klass.instance_methods(false).include? method_name
+        abort "Unknown method: #{klass_name}##{method_name}" unless klass.instance_methods(false).map{|sym| sym.to_s}.include? method_name
       end
     end
 

@@ -119,7 +119,6 @@ class TestUnitChaser < Chaser
   #Current thoughts:
   ## It doesn't print how many tests failed or their error messages
   ## The test runner mediator is only created once. Are there any downsides for this?
-  ## Does --name=/#{name}/ work any more?
 
   def tests_pass?
     if @@test_runner_mediator.nil?

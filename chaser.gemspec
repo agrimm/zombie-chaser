@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chaser}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Grimm", "Ryan Davis", "Eric Hodel", "Kevin Clark"]
-  s.date = %q{2009-11-07}
+  s.date = %q{2009-11-14}
   s.default_executable = %q{chaser}
   s.description = %q{Lightweight mutation testing in any flavor of ruby}
   s.email = %q{andrew.j.grimm@gmail.com}
@@ -23,11 +23,13 @@ Gem::Specification.new do |s|
      "README.txt",
      "Rakefile",
      "bin/chaser",
+     "chaser.gemspec",
      "lib/chaser.rb",
      "lib/test_unit_chaser.rb",
      "test/fixtures/chased.rb",
      "test/test_chaser.rb"
   ]
+  s.homepage = %q{http://andrewjgrimm.wordpress.com/2009/11/08/declare-war-on-everything-with-chaser/}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.5}
@@ -42,12 +44,9 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<test-unit>, [">= 0"]) if RUBY_VERSION.include?("1.9.")
     else
-      s.add_dependency(%q<test-unit>, [">= 0"]) if RUBY_VERSION.include?("1.9.")
     end
   else
-    s.add_dependency(%q<test-unit>, [">= 0"]) if RUBY_VERSION.include?("1.9.")
   end
 end
 

@@ -17,7 +17,7 @@ class Chaser
   ##
   # The version of Chaser you are using.
 
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
 
   ##
   # Is this platform MS Windows-like?

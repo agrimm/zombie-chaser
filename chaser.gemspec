@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{chaser}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Grimm", "Ryan Davis", "Eric Hodel", "Kevin Clark"]
-  s.date = %q{2009-11-14}
+  s.date = %q{2009-11-15}
   s.default_executable = %q{chaser}
   s.description = %q{Lightweight mutation testing in any flavor of ruby}
   s.email = %q{andrew.j.grimm@gmail.com}

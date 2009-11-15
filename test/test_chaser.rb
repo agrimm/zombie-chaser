@@ -81,6 +81,16 @@ class ChaserTestCase < Test::Unit::TestCase
     assert_equal [2,4,6], chased.block_using_instance_method, "block yielding instance method has been modified before it should have been"
   end
 
+  def test_pass_blocks_on_in_class_methods
+    @chaser = TestChaser.new("Chased", "self.block_yielding_class_method")
+    assert_equal [2,4], Chased.block_using_class_method, "block yielding class method has been modified before it should have been"
+    @chaser.modify_method
+    assert_equal [12, 14], Chased.block_using_class_method, "yielded values haven't been modified"
+    @chaser.unmodify_method
+    assert_equal [2,4], Chased.block_using_class_method, "block yielding class method has been modified before it should have been"
+  end
+
+
 end
 
 

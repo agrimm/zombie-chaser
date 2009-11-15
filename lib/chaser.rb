@@ -151,8 +151,9 @@ class Chaser
   def unmodify_class_method
     chaser = self
     @mutated = false
-    aliasing_class(@method_name).send(:define_method, clean_method_name) do |*args|
-      chaser.old_method.bind(self).call(*args)
+    chaser_proxy_method_name = "__chaser_proxy__#{clean_method_name}"
+    aliasing_class(@method_name).send(:define_method, chaser_proxy_method_name) do |block, *args|
+      chaser.old_method.bind(self).call(*args) {|*yielded_values| block.call(*yielded_values)}
     end
   end
 
@@ -185,8 +186,21 @@ class Chaser
     chaser = self
     @mutated = true
     @old_method = aliasing_class(@method_name).instance_method(clean_method_name)
-    aliasing_class(@method_name).send(:define_method, clean_method_name) do |*args|
-      chaser.mutate_value(chaser.old_method.bind(self).call(*args))
+    chaser_proxy_method_name = "__chaser_proxy__#{clean_method_name}"
+    workaround_method_code_string = <<-EOM
+      def #{@method_name}(*args, &block)
+        #{chaser_proxy_method_name}(block, *args)
+      end
+    EOM
+    @klass.class_eval do
+      eval(workaround_method_code_string)
+    end
+    aliasing_class(@method_name).send(:define_method, chaser_proxy_method_name) do |block, *args|
+      original_value = chaser.old_method.bind(self).call(*args) do |*yielded_values|
+        mutated_yielded_values = yielded_values.map{|value| chaser.mutate_value(value)}
+        block.call(*mutated_yielded_values)
+      end
+      chaser.mutate_value(original_value)
     end
   end
 

@@ -71,6 +71,16 @@ class ChaserTestCase < Test::Unit::TestCase
     assert_equal "Zap!", Chased.static_method, "class method should be back to normal, but it isn't"
   end
 
+  def test_pass_blocks_on_in_instance_methods
+    @chaser = TestChaser.new("Chased", "block_yielding_instance_method")
+    chased = Chased.new
+    assert_equal [2,4,6], chased.block_using_instance_method, "block yielding instance method has been modified before it should have been"
+    @chaser.modify_method
+    assert_equal [12, 14, 16], chased.block_using_instance_method, "yielded values haven't been modified"
+    @chaser.unmodify_method
+    assert_equal [2,4,6], chased.block_using_instance_method, "block yielding instance method has been modified before it should have been"
+  end
+
 end
 
 

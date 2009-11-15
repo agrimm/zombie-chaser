@@ -142,8 +142,9 @@ class Chaser
   def unmodify_instance_method
     chaser = self
     @mutated = false
-    @klass.send(:define_method, @method_name) do |*args|
-      chaser.old_method.bind(self).call(*args)
+    chaser_proxy_method_name = "__chaser_proxy__#{@method_name}"
+    @klass.send(:define_method, chaser_proxy_method_name) do |block, *args|
+      chaser.old_method.bind(self).call(*args) {|*yielded_values| block.call(*yielded_values)}
     end
   end
 
@@ -155,12 +156,28 @@ class Chaser
     end
   end
 
+  # Ruby 1.8 doesn't allow define_method to handle blocks.
+  # The blog post http://coderrr.wordpress.com/2008/10/29/using-define_method-with-blocks-in-ruby-18/
+  # show that define_method has problems, and showed how to do workaround_method_code_string
   def modify_instance_method
     chaser = self
     @mutated = true
     @old_method = @klass.instance_method(@method_name)
-    @klass.send(:define_method, @method_name) do |*args|
-      chaser.mutate_value(chaser.old_method.bind(self).call(*args))
+    chaser_proxy_method_name = "__chaser_proxy__#{@method_name}"
+    workaround_method_code_string = <<-EOM
+      def #{@method_name}(*args, &block)
+        #{chaser_proxy_method_name}(block, *args)
+      end
+    EOM
+    @klass.class_eval do
+      eval(workaround_method_code_string)
+    end
+    @klass.send(:define_method, chaser_proxy_method_name) do |block, *args|
+      original_value = chaser.old_method.bind(self).call(*args) do |*yielded_values|
+        mutated_yielded_values = yielded_values.map{|value| chaser.mutate_value(value)}
+        block.call(*mutated_yielded_values)
+      end
+      chaser.mutate_value(original_value)
     end
   end
 

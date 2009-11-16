@@ -83,7 +83,7 @@ class Chaser
     @klass_name = klass_name
     @method_name = method_name.intern if method_name
 
-    @klass = klass_name.to_class
+    @klass = klass_name.to_class if klass_name
 
     @method = nil
     @reporter = reporter

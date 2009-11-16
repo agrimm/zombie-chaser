@@ -5,6 +5,7 @@ require 'test_unit_chaser'
 require 'optparse'
 
 force = false
+target_everything = false
 
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename($0)} class_name [method_name]"
@@ -20,6 +21,11 @@ opts = OptionParser.new do |opts|
   opts.on("-t", "--tests TEST_PATTERN",
           "Location of tests (glob). Unix-style even on Windows, so use forward slashes.") do |pattern|
     TestUnitChaser.test_pattern = pattern
+  end
+
+  opts.on("--everything", "Chase all classes") do |opt|
+    puts "Chaser has declared war on everything!"
+    target_everything = true
   end
 
   opts.on("-F", "--force", "Ignore initial test failures") do |opt|
@@ -46,7 +52,7 @@ opts.parse!
 impl = ARGV.shift
 meth = ARGV.shift
 
-unless impl then
+unless impl or target_everything then
   puts opts
   exit 1
 end

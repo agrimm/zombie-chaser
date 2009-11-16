@@ -28,17 +28,30 @@ class TestUnitChaser < Chaser
     Dir.glob(@@test_pattern).each {|test| require test}
   end
 
-  def self.validate(klass_name, method_name = nil, force = false)
-    load_test_files
-    klass = klass_name.to_class
+  def self.current_class_names(exclude_list)
+    result = []
+    ObjectSpace.each_object(Class) do |klass|
+      next if klass.to_s.include?("Class:0x")
+      next unless klass.ancestors.all? {|ancestor| (ancestor.to_s.split(/::/) & exclude_list).empty?}
+      result << klass.to_s
+    end
+    result
+  end
 
-    # Does the method exist?
-    klass_methods = klass.singleton_methods(false).collect {|meth| "self.#{meth}"}
-    if method_name
-      if method_name =~ /self\./
-        abort "Unknown method: #{klass_name}.#{method_name.gsub('self.', '')}" unless klass_methods.include? method_name
-      else
-        abort "Unknown method: #{klass_name}##{method_name}" unless klass.instance_methods(false).map{|sym| sym.to_s}.include? method_name
+  def self.validate(klass_name = nil, method_name = nil, force = false)
+    pre_existing_class_names = self.current_class_names([]) unless klass_name
+    load_test_files
+
+    if klass_name
+      klass = klass_name.to_class
+      # Does the method exist?
+      klass_methods = klass.singleton_methods(false).collect {|meth| "self.#{meth}"}
+      if method_name
+        if method_name =~ /self\./
+          abort "Unknown method: #{klass_name}.#{method_name.gsub('self.', '')}" unless klass_methods.include? method_name
+        else
+          abort "Unknown method: #{klass_name}##{method_name}" unless klass.instance_methods(false).map{|sym| sym.to_s}.include? method_name
+        end
       end
     end
 
@@ -67,12 +80,18 @@ class TestUnitChaser < Chaser
     end
     puts
 
-    methods = method_name ? Array(method_name) : klass.instance_methods(false) + klass_methods
-
     counts = Hash.new(0)
-    methods.sort.each do |method_name|
-      result = self.new(klass_name, method_name).validate
-      counts[result] += 1
+
+    klass_names = klass_name ? Array(klass_name) : self.current_class_names(["Test"]) - pre_existing_class_names
+    klass_names.each do |block_klass_name|
+      block_klass = block_klass_name.to_class
+
+      methods = method_name ? Array(method_name) : block_klass.instance_methods(false) + block_klass.singleton_methods(false).collect {|meth| "self.#{meth}"}
+
+      methods.sort.each do |block_method_name|
+        result = self.new(block_klass_name, block_method_name).validate
+        counts[result] += 1
+      end
     end
     all_good = counts[false] == 0
 

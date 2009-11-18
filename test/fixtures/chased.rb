@@ -37,4 +37,20 @@ class Chased
     yield 1
     yield 2
   end
+
+  def [](x)
+    x * 2
+  end
+
+  def self.[](x)
+    x * 2
+  end
+
+  def question?
+    "exclamation!"
+  end
+
+  def foo=(x)
+    nil
+  end
 end

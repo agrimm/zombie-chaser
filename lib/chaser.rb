@@ -139,10 +139,22 @@ class Chaser
     @failure = true
   end
 
+  def calculate_proxy_method_name(original_name)
+    result = "__chaser_proxy__#{original_name}"
+    character_renaming = {"[]" => "square_brackets", "^" => "exclusive_or",
+    "=" => "equals", "&" => "ampersand", "*" => "splat", "+" => "plus",
+    "-" => "minus", "%" => "percent", "~" => "tilde", "@" => "at",
+    "/" => "forward_slash", "<" => "less_than", ">" => "greater_than"}
+    character_renaming.each do |characters, renamed_string_portion|
+      result.gsub!(characters, renamed_string_portion)
+    end
+    result
+  end
+
   def unmodify_instance_method
     chaser = self
     @mutated = false
-    chaser_proxy_method_name = "__chaser_proxy__#{@method_name}"
+    chaser_proxy_method_name = calculate_proxy_method_name(@method_name)
     @klass.send(:define_method, chaser_proxy_method_name) do |block, *args|
       chaser.old_method.bind(self).call(*args) {|*yielded_values| block.call(*yielded_values)}
     end
@@ -151,7 +163,7 @@ class Chaser
   def unmodify_class_method
     chaser = self
     @mutated = false
-    chaser_proxy_method_name = "__chaser_proxy__#{clean_method_name}"
+    chaser_proxy_method_name = calculate_proxy_method_name(clean_method_name)
     aliasing_class(@method_name).send(:define_method, chaser_proxy_method_name) do |block, *args|
       chaser.old_method.bind(self).call(*args) {|*yielded_values| block.call(*yielded_values)}
     end
@@ -164,7 +176,7 @@ class Chaser
     chaser = self
     @mutated = true
     @old_method = @klass.instance_method(@method_name)
-    chaser_proxy_method_name = "__chaser_proxy__#{@method_name}"
+    chaser_proxy_method_name = calculate_proxy_method_name(@method_name)
     workaround_method_code_string = <<-EOM
       def #{@method_name}(*args, &block)
         #{chaser_proxy_method_name}(block, *args)
@@ -186,7 +198,7 @@ class Chaser
     chaser = self
     @mutated = true
     @old_method = aliasing_class(@method_name).instance_method(clean_method_name)
-    chaser_proxy_method_name = "__chaser_proxy__#{clean_method_name}"
+    chaser_proxy_method_name = calculate_proxy_method_name(clean_method_name)
     workaround_method_code_string = <<-EOM
       def #{@method_name}(*args, &block)
         #{chaser_proxy_method_name}(block, *args)

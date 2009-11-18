@@ -90,7 +90,46 @@ class ChaserTestCase < Test::Unit::TestCase
     assert_equal [2,4], Chased.block_using_class_method, "block yielding class method has been modified before it should have been"
   end
 
+  def test_handle_funny_characters_in_instance_method_names
+    @chaser = TestChaser.new("Chased", "[]")
+    chased = Chased.new
+    assert_equal 2, chased[1], "Original doesn't work"
+    @chaser.modify_method
+    assert_equal 7, chased[1], "Modified doesn't work"
+    @chaser.unmodify_method
+    assert_equal 2, chased[1], "Modified then unmodified doesn't work"
+  end
 
+  def test_handle_funny_characters_in_class_method_names
+    @chaser = TestChaser.new("Chased", "self.[]")
+    assert_equal 2, Chased[1], "Original doesn't work"
+    @chaser.modify_method
+    assert_equal 7, Chased[1], "Modified doesn't work"
+    @chaser.unmodify_method
+    assert_equal 2, Chased[1], "Modified then unmodified doesn't work"
+  end
+
+  def test_more_funny_characters
+    assert_nothing_raised("Can't handle certain characters") do
+      @chaser = TestChaser.new("Chased", "question?")
+      chased = Chased.new
+      chased.question?
+      @chaser.modify_method
+      chased.question?
+      @chaser.unmodify_method
+      chased.question?
+    end
+
+    assert_nothing_raised("Can't handle equal signs") do
+      @chaser = TestChaser.new("Chased", "foo=")
+      chased = Chased.new
+      chased.foo= 1
+      @chaser.modify_method
+      chased.foo = 2
+      @chaser.unmodify_method
+      chased.foo = 3
+    end
+  end
 end
 
 

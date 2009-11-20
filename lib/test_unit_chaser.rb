@@ -123,7 +123,7 @@ class TestUnitChaser < Chaser
   def tests_pass?
     if @@test_runner_mediator.nil?
       obj_sp = Test::Unit::Collector::ObjectSpace.new
-      test_suite = HeckleFriendlyTestSuite.new("Heckle friendly test suite")
+      test_suite = FastFailingTestSuite.new("Fast failing test suite")
       test_suite << obj_sp.collect
 
       @@test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
@@ -142,7 +142,7 @@ class TestUnitChaser < Chaser
   end
 end
 
-class HeckleFriendlyTestSuite < Test::Unit::TestSuite
+class FastFailingTestSuite < Test::Unit::TestSuite
   def initialize(*args)
     @test_method_times = Hash.new(0)
     super(*args)

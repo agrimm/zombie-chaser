@@ -1,22 +1,21 @@
 == DESCRIPTION:
 
-Chaser is unit test sadism(tm), like Seattlerb's Heckle. It's more or less mutation testing, except that rather than mutating every line of code it can get its claws into, it merely modifies the return value of targeted methods. If the unit tests don't notice the modified return values, or the program going haywire as a result of using those modified return values, then they aren't doing their jobs properly.
+Zombie chaser aims to be a graphical interface to mutation testing. Kill off the mutants, or they will eat your brains!
 
-Unit test sadism is a trademark of Ryan Davis and Kevin Clark, and is used without permission.
+Currently, it uses a console interface. "@" represents you, "Z" represents the zombie approaching you, and "." indicates how close it is getting to you.
 
 == FEATURES/PROBLEMS:
 
-* It only mutates the return values of methods.
-* It works in ruby 1.9, Windows, and JRuby.
+* Code is slightly different to chaser.
 
 == REQUIREMENTS:
 
-* Test/Unit. Ruby 1.9 needs the test-unit gem, while ruby 1.8 doesn't require anything!
+* Gosu (planned requirement)
+* Test-unit (for ruby 1.9)
 
 == INSTALL:
 
-* Add gemcutter as a gem source.
-* sudo gem install chaser
+* Not available as a gem yet.
 
 == LICENSE:
 

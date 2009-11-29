@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'timeout'
+require 'world'
 
 class String # :nodoc:
   def to_class
@@ -101,7 +102,7 @@ class Chaser
   end
 
   def run_tests
-    if tests_pass? then
+    if zombie_survives? then
       record_passing_mutation
     else
       @reporter.report_test_failures

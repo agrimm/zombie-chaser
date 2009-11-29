@@ -13,20 +13,23 @@ rescue NameError
   # ignore
 end
 
-class TestUnitChaser < Chaser
+class ZombieTestChaser < Chaser
 
   @@test_pattern = 'test/test_*.rb'
   @@tests_loaded = false
-  @@test_runner_mediator = nil
+  @@world = nil
 
   def self.test_pattern=(value)
     @@test_pattern = value
   end
 
-  def self.load_test_files
+  def self.create_world
     @@tests_loaded = true
-    raise "Can't detect any files in test pattern \"#{@@test_pattern}\"#{WINDOZE ? " Are you remembering to use forward slashes?" : ""}" if Dir.glob(@@test_pattern).empty?
-    Dir.glob(@@test_pattern).each {|test| require test}
+    @@world = World.new_using_test_unit_handler(@@test_pattern)
+  end
+
+  def self.world
+    @@world
   end
 
   def self.current_class_names(exclude_list)
@@ -41,7 +44,7 @@ class TestUnitChaser < Chaser
 
   def self.validate(klass_name = nil, method_name = nil, force = false)
     pre_existing_class_names = self.current_class_names([]) unless klass_name
-    load_test_files
+    create_world
 
     if klass_name
       klass = klass_name.to_class
@@ -60,7 +63,7 @@ class TestUnitChaser < Chaser
 
     chaser = self.new(klass_name)
 
-    passed = chaser.tests_pass?
+    passed = chaser.human_survives?
 
     unless force or passed then
       abort "Initial run of tests failed... fix and run chaser again"
@@ -111,76 +114,18 @@ class TestUnitChaser < Chaser
     all_good
   end
 
+  def human_survives?
+    self.class.world.run_human
+  end
+
+  def zombie_survives?
+    zombie = self.class.world.create_zombie_using_test_unit_handler
+    self.class.world.run_zombie(zombie)
+  end
+
   def initialize(klass_name=nil, method_name=nil)
     super
-    self.class.load_test_files unless @@tests_loaded
+    self.class.create_world unless @@tests_loaded
   end
-
-  #Current thoughts:
-  ## It doesn't print how many tests failed or their error messages
-  ## The test runner mediator is only created once. Are there any downsides for this?
-
-  def tests_pass?
-    if @@test_runner_mediator.nil?
-      obj_sp = Test::Unit::Collector::ObjectSpace.new
-      test_suite = FastFailingTestSuite.new("Fast failing test suite")
-      test_suite << obj_sp.collect
-
-      @@test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
-      @@test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {throw :stop_test_runner}
-    end
-
-    silence_stream do
-      result = false
-      catch (:stop_test_runner) do
-        result = @@test_runner_mediator.run_suite
-      end
-
-      ARGV.clear
-      result
-    end
-  end
-end
-
-class FastFailingTestSuite < Test::Unit::TestSuite
-  def initialize(*args)
-    @test_method_times = Hash.new(0)
-    super(*args)
-  end
-
-  # Runs the tests contained in this TestSuite.
-
-  # Normally, this would ask each test, which may be a test suite containing other tests,
-  # to run itself. However, we want to run the fastest (and most likely to fail) methods
-  # first, regardless of which suite they're in
-
-  # To do: build a more sophisticated approach to weigh up how long a method takes, and
-  # how likely it is to fail
-
-  def run(result, &progress_block)
-    yield(STARTED, name)
-    test_cases = find_test_cases(@tests)
-    test_cases = test_cases.sort_by{|test| @test_method_times[test.name]}
-    test_cases.each do |test|
-      @test_method_times[test.name] = @test_method_times[test.name] * 0.5 #In case the test fails
-      start_time = Time.now
-      test.run(result, &progress_block)
-      @test_method_times[test.name] = Time.now - start_time
-    end
-    yield(FINISHED, name)
-  end
-
-  def find_test_cases(tests)
-    result = []
-    tests.each do |test|
-      if test.respond_to?(:tests)
-        result += find_test_cases(test.tests)
-      else
-        result << test
-      end
-    end
-    result
-  end
-  private :find_test_cases
 
 end

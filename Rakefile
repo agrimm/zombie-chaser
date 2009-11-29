@@ -18,6 +18,6 @@ rescue LoadError
 end
 
 task :test do
-  ruby "test/test_chaser.rb"
+  ruby "test/test_unit.rb"
 end
 

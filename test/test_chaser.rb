@@ -3,7 +3,7 @@ $:.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'test/unit/testcase'
 require 'test/unit' if $0 == __FILE__
-require 'test_unit_chaser'
+require 'zombie_test_chaser'
 require 'chased'
 
 class TestChaser < Chaser
@@ -133,12 +133,12 @@ class ChaserTestCase < Test::Unit::TestCase
 end
 
 
-class TestUnitChaserCase < Test::Unit::TestCase
+class ZombieTestChaserCase < Test::Unit::TestCase
   def test_detects_invalid_glob
-    incorrect_glob = "test\test_chaser.rb"
-    TestUnitChaser.test_pattern = incorrect_glob
+    incorrect_glob = 'test\test_chaser.rb'
+    ZombieTestChaser.test_pattern = incorrect_glob
     assert_raise(RuntimeError, "Can't detect an incorrect glob") do
-      TestUnitChaser.load_test_files
+      ZombieTestChaser.create_world
     end
   end
 end

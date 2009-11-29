@@ -1,7 +1,7 @@
 #!/usr/local/bin/ruby
 
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
-require 'test_unit_chaser'
+require 'zombie_test_chaser'
 require 'optparse'
 
 force = false
@@ -10,21 +10,21 @@ target_everything = false
 opts = OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename($0)} class_name [method_name]"
   opts.on("-v", "--verbose", "Loudly explain chaser run") do |opt|
-    TestUnitChaser.debug = true
+    ZombieTestChaser.debug = true
   end
 
-  opts.on("-V", "--version", "Prints Chaser's version number") do |opt|
-    puts "Chaser #{Chaser::VERSION}"
+  opts.on("-V", "--version", "Prints zombie-chaser's version number") do |opt|
+    puts "zombie-chaser #{ZombieTestChaser::VERSION}"
     exit 0
   end
 
   opts.on("-t", "--tests TEST_PATTERN",
           "Location of tests (glob). Unix-style even on Windows, so use forward slashes.") do |pattern|
-    TestUnitChaser.test_pattern = pattern
+    ZombieTestChaser.test_pattern = pattern
   end
 
-  opts.on("--everything", "Chase all classes") do |opt|
-    puts "Chaser has declared war on everything!"
+  opts.on("--everything", "Zombie chase all classes") do |opt|
+    puts "You're now facing a plague of zombies!"
     target_everything = true
   end
 
@@ -61,5 +61,5 @@ unless impl or target_everything then
   exit 1
 end
 
-exit TestUnitChaser.validate(impl, meth, force)
+exit ZombieTestChaser.validate(impl, meth, force)
 

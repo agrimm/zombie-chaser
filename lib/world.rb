@@ -2,7 +2,7 @@ require "human"
 require "interface"
 
 class World
-  attr_reader :representations
+  attr_reader :representations, :interface
 
   def self.new_using_results(human_results, zombies_results)
     world = new(:no_interface)
@@ -27,7 +27,6 @@ class World
     @human = nil
     @current_zombie = nil
     @test_pattern = nil
-    @representations = []
     @interface = case interface_type
       when :console_interface then ConsoleInterface.new
       when :no_interface then NoInterface.new
@@ -37,6 +36,7 @@ class World
   def set_human(human)
     raise "Already set" unless @human.nil?
     @human = human
+    interface.human = human
   end
 
   def set_zombie_list(zombie_list)
@@ -70,26 +70,13 @@ class World
 
   def run_zombie(zombie)
     @current_zombie = zombie
+    @interface.current_zombie = zombie
     @current_zombie.run
   end
 
-  def current_representation
-    if @current_zombie.nil?
-      "." * human_successful_step_count + @human.current_symbol
-    elsif human_successful_step_count > @current_zombie.successful_step_count
-      "." * @current_zombie.successful_step_count + @current_zombie.current_symbol + "." * (@human.successful_step_count - @current_zombie.successful_step_count - 1) + @human.current_symbol
-    else
-      "." * @current_zombie.successful_step_count + @current_zombie.current_symbol
-    end
-  end
-
-  def human_successful_step_count
-    @human.successful_step_count
-  end
-
   def something_happened
-    @representations << current_representation
-    @interface.display_representation(@representations.last)
+    @interface.something_happened
   end
+
 end
 

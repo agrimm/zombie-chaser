@@ -49,7 +49,7 @@ opts = OptionParser.new do |opts|
 end
 
 looks_like_rails = test ?f, 'config/environment.rb'
-TestUnitChaser.test_pattern = "test/**/*.rb" if looks_like_rails
+ZombieTestChaser.test_pattern = "test/**/*.rb" if looks_like_rails
 
 opts.parse!
 

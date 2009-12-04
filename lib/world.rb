@@ -26,6 +26,7 @@ class World
   def initialize(interface_type)
     @human = nil
     @current_zombie = nil
+    @zombie_list = nil
     @test_pattern = nil
     @interface = case interface_type
       when :console_interface then ConsoleInterface.new

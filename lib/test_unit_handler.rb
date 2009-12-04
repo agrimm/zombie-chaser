@@ -21,7 +21,7 @@ class TestUnitHandler
   end
 
   def run
-    catch (:stop_test_runner) do
+    catch(:stop_test_runner) do
       @test_runner_mediator.run_suite
     end
   end

@@ -3,6 +3,7 @@ class Interface
 
   def initialize
     @representations = []
+    @current_zombie = nil
   end
 
   def current_representation

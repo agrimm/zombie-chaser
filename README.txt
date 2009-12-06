@@ -1,18 +1,19 @@
 == DESCRIPTION:
 
-Zombie chaser aims to be a graphical interface to mutation testing. Kill off the mutants, or they will eat your brains!
+Zombie chaser is a graphic(al) interface to mutation testing. Kill off the mutants, or they will eat your brains!
 
-Currently, it uses a console interface. "@" represents you, "Z" represents the zombie approaching you, and "." indicates how close it is getting to you.
+The human running across the screen represents the normal running of your unit tests. If one of them fails, then the human dies.
 
-Working on a GUI now ...
+Then the zombies chase after you. Each zombie represents a mutation to your code. If your unit tests detect that something's wrong with your code, then the mutation gets killed. Otherwise, the zombie gets to meet you.
 
 == FEATURES/PROBLEMS:
 
 * Code is slightly different to chaser.
+* Not quite finished.
 
 == REQUIREMENTS:
 
-* Gosu (planned requirement)
+* Gosu
 * Test-unit (for ruby 1.9)
 
 == INSTALL:

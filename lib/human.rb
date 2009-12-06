@@ -72,10 +72,11 @@ class Human < Actor
   end
 
   def finish_dying
-    sleep 2
+    sleep 0.5
     raise "I'm not dead yet!" unless dying?
     @health = :dead
     notify_world
+    sleep 0.5
   end
 
   def notify_world

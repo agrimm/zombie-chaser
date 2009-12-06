@@ -75,6 +75,10 @@ class World
     @current_zombie = zombie
     @interface.current_zombie = zombie
     @current_zombie.run
+    if @current_zombie.dying?
+      @current_zombie.finish_dying
+    end
+    ! @current_zombie.dead?
   end
 
   def something_happened

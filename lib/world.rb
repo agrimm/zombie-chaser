@@ -74,9 +74,13 @@ class World
   def run_zombie(zombie)
     @current_zombie = zombie
     @interface.current_zombie = zombie
+    sleep 0.2
     @current_zombie.run
     if @current_zombie.dying?
       @current_zombie.finish_dying
+    else
+      @current_zombie.eat(@human)
+      sleep 1
     end
     ! @current_zombie.dead?
   end

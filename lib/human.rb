@@ -12,6 +12,7 @@ class Human < Actor
   end
 
   def initialize(test_pattern, world)
+    @status = nil #Currently only used by zombie
     @world = world
     @successful_step_count = 0
     @health = :alive
@@ -39,6 +40,7 @@ class Human < Actor
   end
 
   def actor_state
+    return "attacking" if @status == :attacking
     case @health
     when :alive
       "moving"
@@ -81,6 +83,10 @@ class Human < Actor
 
   def notify_world
     @world.something_happened
+  end
+
+  def get_eaten
+    @health = :dying unless dead?
   end
 end
 
@@ -161,6 +167,11 @@ end
 
 class Zombie < Human
   include ZombieInterface
+
+  def eat(human)
+    @status = :attacking #Even if the human's dead, look for leftovers
+    human.get_eaten
+  end
 end
 
 class MockZombie < MockHuman #Fixme provide a proper hierarchy

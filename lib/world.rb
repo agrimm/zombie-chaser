@@ -14,7 +14,7 @@ class World
   end
 
   def self.new_using_test_unit_handler(test_pattern)
-    world = new(:console_interface)
+    world = new(:gui_interface) #FIXME make this a choice between console and gui
     human = Human.new_using_test_unit_handler(test_pattern, world)
     zombie_list = MockZombieList.new_using_results([], world) #Fixme
     world.set_human(human)
@@ -31,6 +31,7 @@ class World
     @interface = case interface_type
       when :console_interface then ConsoleInterface.new
       when :no_interface then NoInterface.new
+      when :gui_interface then GuiInterface.new
     end
   end
 
@@ -50,6 +51,7 @@ class World
     @test_pattern = test_pattern
   end
 
+  #FIXME currently only used by the unit tests. It is equivalent to ZombieTestChaser.validate
   def run
     run_human
     until (@human.dead? or @zombie_list.all_slain?)

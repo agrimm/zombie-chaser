@@ -1,6 +1,9 @@
-require "test_unit_handler"
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. ui])
 
-class Human
+require "test_unit_handler"
+require "ui" #For actor superclass
+
+class Human < Actor
   private_class_method :new
   attr_reader :successful_step_count
 

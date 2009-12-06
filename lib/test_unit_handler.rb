@@ -33,6 +33,7 @@ class TestUnitHandler
   end
 
   def test_finished
+    sleep 0.1 #Hack to avoid it being too quick
     @results << :pass
     @human.notify_passing_step
   end

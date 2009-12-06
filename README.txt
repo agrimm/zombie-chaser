@@ -4,6 +4,8 @@ Zombie chaser aims to be a graphical interface to mutation testing. Kill off the
 
 Currently, it uses a console interface. "@" represents you, "Z" represents the zombie approaching you, and "." indicates how close it is getting to you.
 
+Working on a GUI now ...
+
 == FEATURES/PROBLEMS:
 
 * Code is slightly different to chaser.
@@ -21,7 +23,8 @@ Currently, it uses a console interface. "@" represents you, "Z" represents the z
 
 (The MIT License)
 
-Copyright (c) 2006-2009 Ryan Davis and Kevin Clark and Andrew Grimm
+Copyright (c) 2006-2009 Ryan Davis and Kevin Clark and Andrew Grimm,
+Chris Lloyd, Dave Newman, Carl Woodward & Daniel Bogan.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

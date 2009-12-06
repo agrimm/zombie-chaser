@@ -51,3 +51,27 @@ class ConsoleInterface < Interface
     puts
   end
 end
+
+class GuiInterface < Interface
+
+  def initialize
+    @window = Window.new
+    #Actor.window = @window #Fixme why can't this do the trick?
+    Human.window = @window
+    Zombie.window = @window
+    @window_showing_thread = Thread.new {@window.show}
+  end
+
+  #Doesn't need to be used, as window updates 60 times a second anyway
+  def something_happened
+  end
+
+  def human=(human)
+    @window.human = human
+  end
+
+  def current_zombie=(current_zombie)
+    @window.current_zombie = current_zombie
+  end
+
+end

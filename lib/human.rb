@@ -34,6 +34,10 @@ class Human < Actor
     end
   end
 
+  def actor_type
+    'robot'
+  end
+
   def notify_passing_step
     @successful_step_count += 1
     notify_world
@@ -126,6 +130,10 @@ module ZombieInterface
     when :dead
       "+"
     end
+  end
+
+  def actor_type
+    'zombie'
   end
 end
 

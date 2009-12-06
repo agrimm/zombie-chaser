@@ -21,7 +21,16 @@ class Actor
   end
 
   def image
-    self.class.sprites['robot']['idle'] #FIXME adjust this to indicate human versus zombie, and status of alive, dying or dead
+    #self.class.sprites['robot']['idle'] #FIXME adjust this to indicate human versus zombie, and status of alive, dying or dead
+    self.class.sprites[actor_type][actor_state]
+  end
+
+  def actor_type
+    raise NotImplementedError
+  end
+
+  def actor_state
+    "idle"
   end
 
   def draw

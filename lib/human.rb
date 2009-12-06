@@ -38,6 +38,21 @@ class Human < Actor
     'robot'
   end
 
+  def actor_state
+    case @health
+    when :alive
+      "moving"
+    when :dying
+      "dying"
+    when :dead
+      "dead"
+    end
+  end
+
+  def actor_direction
+    270.0
+  end
+
   def notify_passing_step
     @successful_step_count += 1
     notify_world
@@ -57,6 +72,7 @@ class Human < Actor
   end
 
   def finish_dying
+    sleep 2
     raise "I'm not dead yet!" unless dying?
     @health = :dead
     notify_world
@@ -135,6 +151,11 @@ module ZombieInterface
   def actor_type
     'zombie'
   end
+
+  def actor_direction
+    90.0
+  end
+
 end
 
 class Zombie < Human

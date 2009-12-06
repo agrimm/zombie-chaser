@@ -29,6 +29,7 @@ class TestUnitHandler
   def test_failed
     @results << :failure
     @human.notify_failing_step
+    sleep 0.5
     throw :stop_test_runner
   end
 

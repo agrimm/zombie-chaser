@@ -29,12 +29,8 @@ class Actor
     raise NotImplementedError
   end
 
-  def actor_state
-    "idle"
-  end
-
   def draw
-    image.draw_rot(x, y, z, 0.0)
+    image.draw_rot(x, y, z, actor_direction)
   end
 
   def x

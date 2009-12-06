@@ -4,8 +4,8 @@ require "test/unit/ui/testrunnermediator"
 class TestUnitHandler
   attr_reader :results
 
-  def initialize(test_pattern, human)
-    @human = human
+  def initialize(test_pattern, actor)
+    @actor = actor
     raise "Error: can't detect any files in test pattern \"#{test_pattern} (Don't forget to use forward slashes even in Windows)" if Dir.glob(test_pattern).empty?
     Dir.glob(test_pattern).each {|test| require test} #In heckle, this is separated out
     @finished = false
@@ -28,7 +28,7 @@ class TestUnitHandler
 
   def test_failed
     @results << :failure
-    @human.notify_failing_step
+    @actor.notify_failing_step
     sleep 0.5
     throw :stop_test_runner
   end
@@ -36,7 +36,7 @@ class TestUnitHandler
   def test_finished
     sleep 0.1 #Hack to avoid it being too quick
     @results << :pass
-    @human.notify_passing_step
+    @actor.notify_passing_step
   end
 
 end

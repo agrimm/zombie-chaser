@@ -12,7 +12,7 @@ class Actor
   def self.window; @window end
 
   def self.sprites
-    @sprites ||=  Dir['ui/sprites/*.png'].inject({}) do |sprites,f|
+    @sprites ||=  Dir[File.join(File.dirname(__FILE__),'sprites/*.png')].inject({}) do |sprites,f|
       sprite = File.basename(f,'.*').split('-')
       sprites[sprite.first] ||= {}
       sprites[sprite.first][sprite.last] = Gosu::Image.new(window, f, false)
@@ -62,8 +62,8 @@ class Window < Gosu::Window
     self.caption = 'Zombie-chaser'
     self.grid = 1
 
-    @grass     = Gosu::Image.new(self, 'ui/tiles/grass.png', true)
-    @shrubbery = Gosu::Image.new(self, 'ui/tiles/shrubbery.png', true)
+    @grass     = Gosu::Image.new(self, File.join(File.dirname(__FILE__),'tiles/grass.png'), true)
+    @shrubbery = Gosu::Image.new(self, File.join(File.dirname(__FILE__),'tiles/shrubbery.png'), true)
   end
 
   def draw

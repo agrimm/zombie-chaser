@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{zombie-chaser}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Grimm", "Ryan Davis", "Eric Hodel", "Kevin Clark"]
-  s.date = %q{2009-12-07}
+  s.date = %q{2009-12-08}
   s.default_executable = %q{zombie-chaser}
   s.description = %q{A zombie-themed graphic(al) user interface for mutation testing}
   s.email = %q{andrew.j.grimm@gmail.com}
@@ -57,7 +57,8 @@ Gem::Specification.new do |s|
      "ui/sprites/zombie-turning.png",
      "ui/tiles/grass.png",
      "ui/tiles/shrubbery.png",
-     "ui/ui.rb"
+     "ui/ui.rb",
+     "zombie-chaser.gemspec"
   ]
   s.homepage = %q{http://andrewjgrimm.wordpress.com/2009/11/08/declare-war-on-everything-with-chaser/}
   s.rdoc_options = ["--charset=UTF-8"]

@@ -18,7 +18,7 @@ Then the zombies chase after you. Each zombie represents a mutation to your code
 
 == INSTALL:
 
-* Not available as a gem yet.
+* sudo gem install zombie-chaser
 
 == LICENSE:
 

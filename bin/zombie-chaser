@@ -1,7 +1,9 @@
 #!/usr/local/bin/ruby
 
 $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. ui])
 require 'zombie_test_chaser'
+require 'ui'
 require 'optparse'
 
 force = false
@@ -36,6 +38,14 @@ opts = OptionParser.new do |opts|
                                      "Used to catch infinite loops") do |timeout|
     Chaser.timeout = timeout.to_i
     puts "Setting timeout at #{timeout} seconds."
+  end
+
+  opts.on("--width PIXELS", "Width of screen in pixels") do |width|
+    Window.width = Integer(width)
+  end
+
+  opts.on("--height PIXELS", "Height of screen in pixels") do |height|
+    Window.height = Integer(height)
   end
 
   opts.on("-r", "--random-seed SEED", "Random seed number (under development)") do |seed|

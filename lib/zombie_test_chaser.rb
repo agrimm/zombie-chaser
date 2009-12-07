@@ -15,7 +15,7 @@ end
 
 class ZombieTestChaser < Chaser
 
-  VERSION = '0.0.2'
+  VERSION = '0.0.3'
 
   @@test_pattern = 'test/test_*.rb'
   @@tests_loaded = false

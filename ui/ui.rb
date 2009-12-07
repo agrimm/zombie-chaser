@@ -52,12 +52,20 @@ class Actor
 end
 
 class Window < Gosu::Window
+  @width = 400
+  @height = 300
+
+  def self.width=(width); @width = width end
+  def self.width; @width end
+
+  def self.height=(height); @height = height end
+  def self.height; @height end
 
   attr_accessor :grid
   attr_writer :human, :current_zombie
 
   def initialize
-    super(400, 300, false)
+    super(self.class.width, self.class.height, false)
 
     self.caption = 'Zombie-chaser'
     self.grid = 1

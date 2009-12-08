@@ -1,4 +1,21 @@
-require 'gosu'
+begin
+  require 'gosu'
+rescue LoadError => e
+  puts "gosu gem not available! Using fake implementations of Gosu."
+  require 'ostruct'
+  module Gosu
+    class Window
+      attr_accessor :caption, :grid
+      def initialize(one, two, three)
+      end
+    end
+    
+    class Image
+      def initialize(*args)
+      end
+    end
+  end
+end
 
 class ZIndex
   LAYERS = [:world, :dead, :human, :zombie, :overlay]

@@ -2,6 +2,11 @@ require "human"
 require "interface"
 
 class World
+  @interface_type = :gui_interface
+
+  def self.interface_type=(interface_type); @interface_type = interface_type end
+  def self.interface_type; @interface_type end
+
   attr_reader :representations, :interface
 
   def self.new_using_results(human_results, zombies_results)
@@ -14,7 +19,7 @@ class World
   end
 
   def self.new_using_test_unit_handler(test_pattern)
-    world = new(:gui_interface) #FIXME make this a choice between console and gui
+    world = new(self.interface_type)
     human = Human.new_using_test_unit_handler(test_pattern, world)
     zombie_list = MockZombieList.new_using_results([], world) #Fixme
     world.set_human(human)

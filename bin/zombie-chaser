@@ -48,6 +48,10 @@ opts = OptionParser.new do |opts|
     Window.height = Integer(height)
   end
 
+  opts.on("--console", "Use nethack-style text interface") do |opt|
+    World.interface_type = :console_interface
+  end
+
   opts.on("-r", "--random-seed SEED", "Random seed number (under development)") do |seed|
     srand(seed.to_i)
   end

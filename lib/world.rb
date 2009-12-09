@@ -7,7 +7,7 @@ class World
   def self.interface_type=(interface_type); @interface_type = interface_type end
   def self.interface_type; @interface_type end
 
-  attr_reader :representations, :interface
+  attr_reader :interface
 
   def self.new_using_results(human_results, zombies_results)
     world = new(:no_interface)

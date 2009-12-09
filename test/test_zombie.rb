@@ -6,15 +6,15 @@ require "world"
 module TestHumanHelper
   def assert_that_representations_include(expected_representation, human_results, failure_message)
     world = create_world(human_results)
-    interface = world.interface
-    assert interface.representations.include?(expected_representation), failure_message + "Expected #{expected_representation}, got #{world.representations.inspect}"
+    actual_representations = world.interface.representations
+    assert actual_representations.include?(expected_representation), failure_message + "Expected #{expected_representation}, got #{actual_representations.inspect}"
   end
 
   def assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
     world = create_world(human_results, zombies_results)
-    interface = world.interface
+    actual_representations = world.interface.representations
     expected_representations.each do |expected_representation|
-      assert interface.representations.include?(expected_representation), failure_message + ": Expected #{expected_representation}, got #{world.representations.inspect}"
+      assert actual_representations.include?(expected_representation), failure_message + ": Expected #{expected_representation}, got #{actual_representations.inspect}"
     end
   end
 

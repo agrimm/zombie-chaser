@@ -34,7 +34,9 @@ class Actor
   end
 
   def x
-    @successful_step_count * 10 + 10
+    max_position = Window.width - 10
+    left_offset = 10
+    left_offset + ((@successful_step_count * 10) * (max_position - left_offset) / [test_suite_size * 10 + 10, (max_position - left_offset)].max).round
   end
 
   def y

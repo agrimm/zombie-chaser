@@ -1,5 +1,8 @@
 class Interface
   attr_writer :human, :current_zombie
+end
+
+class ConsoleInterface < Interface
 
   def initialize
     @representations = []
@@ -8,38 +11,18 @@ class Interface
 
   def current_representation
     if @current_zombie.nil?
-      "." * human_successful_step_count + @human.current_symbol
-    elsif human_successful_step_count > @current_zombie.successful_step_count
-      "." * @current_zombie.successful_step_count + @current_zombie.current_symbol + "." * (@human.successful_step_count - @current_zombie.successful_step_count - 1) + @human.current_symbol
+      "." * human_position + @human.current_symbol
+    elsif human_position > zombie_position
+      "." * zombie_position + @current_zombie.current_symbol + "." * (human_position - zombie_position - 1) + @human.current_symbol
     else
-      "." * @current_zombie.successful_step_count + @current_zombie.current_symbol
+      "." * zombie_position + @current_zombie.current_symbol
     end
-  end
-
-  def human_successful_step_count
-    @human.successful_step_count
   end
 
   def something_happened
     @representations << current_representation
     display_representation(@representations.last)
   end
-
-end
-
-class NoInterface < Interface
-  attr_reader :representations
-
-  def display_representation(representation)
-    #Do nothing
-  end
-
-  def finish
-    #Do nothing
-  end
-end
-
-class ConsoleInterface < Interface
 
   def display_representation(representation)
     print "\r", representation
@@ -49,6 +32,32 @@ class ConsoleInterface < Interface
 
   def finish
     puts
+  end
+
+  def human_position
+    adjust_for_screen_width(@human.successful_step_count)
+  end
+
+  def zombie_position
+    adjust_for_screen_width(@current_zombie.successful_step_count)
+  end
+
+  def adjust_for_screen_width(step_count)
+    max_position = 78.0
+    (step_count * max_position / [@human.test_suite_size, max_position].max).round
+  end
+
+end
+
+class NoInterface < ConsoleInterface
+  attr_reader :representations
+
+  def display_representation(representation)
+    #Do nothing
+  end
+
+  def finish
+    #Do nothing
   end
 end
 

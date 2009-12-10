@@ -93,3 +93,16 @@ class TestZombie < Test::Unit::TestCase
   end
 
 end
+
+class TestConsoleInterface < Test::Unit::TestCase
+  include TestHumanHelper
+
+  def test_excessive_tests_dont_make_it_run_off_the_page
+    human_results = [:pass] * 500
+    zombies_results = [[:pass, :failure]]
+    expected_representations = ["Z" + "." * 77 + "@"] #Having 80 characters in a line doesn't work
+    failure_message = "Doesn't handle large number of tests properly"
+    assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
+end

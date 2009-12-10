@@ -88,6 +88,11 @@ class Human < Actor
   def get_eaten
     @health = :dying unless dead?
   end
+
+  def test_suite_size
+    @test_handler.test_suite_size
+  end
+
 end
 
 class MockHuman < Human
@@ -115,6 +120,10 @@ class MockHuman < Human
       @successful_step_count += 1
     end
     notify_world
+  end
+
+  def test_suite_size
+    @results.size
   end
 end
 

@@ -2,7 +2,7 @@ require "test/unit/collector/objectspace"
 require "test/unit/ui/testrunnermediator"
 
 class TestUnitHandler
-  attr_reader :results
+  attr_reader :results, :test_suite_size
 
   def initialize(test_pattern, actor)
     @actor = actor
@@ -14,6 +14,7 @@ class TestUnitHandler
     obj_sp = Test::Unit::Collector::ObjectSpace.new
     test_suite = Test::Unit::TestSuite.new("Mutation slayer test suite")
     test_suite << obj_sp.collect
+    @test_suite_size = test_suite.size
     @test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
     @test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {test_failed}
     @test_runner_mediator.add_listener(Test::Unit::TestCase::FINISHED) {test_finished}

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Grimm", "Ryan Davis", "Eric Hodel", "Kevin Clark"]
-  s.date = %q{2009-12-08}
+  s.date = %q{2009-12-13}
   s.default_executable = %q{zombie-chaser}
   s.description = %q{A zombie-themed graphic(al) user interface for mutation testing}
   s.email = %q{andrew.j.grimm@gmail.com}

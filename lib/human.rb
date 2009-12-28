@@ -152,6 +152,22 @@ class MockZombieList
   end
 end
 
+class ZombieList
+
+  def self.new_using_test_unit_handler(test_pattern, world)
+    new(test_pattern, world)
+  end
+
+  def initialize(test_pattern, world)
+    @test_pattern, @world = test_pattern, world
+  end
+
+  def supply_next_zombie
+    zombie = Zombie.new_using_test_unit_handler(@test_pattern, @world)
+  end
+
+end
+
 module ZombieInterface
   def current_symbol
     case @health

@@ -21,10 +21,9 @@ class World
   def self.new_using_test_unit_handler(test_pattern)
     world = new(self.interface_type)
     human = Human.new_using_test_unit_handler(test_pattern, world)
-    zombie_list = MockZombieList.new_using_results([], world) #Fixme
+    zombie_list = ZombieList.new_using_test_unit_handler(test_pattern, world)
     world.set_human(human)
     world.set_zombie_list(zombie_list)
-    world.set_test_pattern(test_pattern)
     world
   end
 
@@ -32,7 +31,6 @@ class World
     @human = nil
     @current_zombie = nil
     @zombie_list = nil
-    @test_pattern = nil
     @interface = case interface_type
       when :console_interface then ConsoleInterface.new
       when :no_interface then NoInterface.new
@@ -51,16 +49,11 @@ class World
     @zombie_list = zombie_list
   end
 
-  def set_test_pattern(test_pattern)
-    raise "Already set" unless @test_pattern.nil?
-    @test_pattern = test_pattern
-  end
-
   #FIXME currently only used by the unit tests. It is equivalent to ZombieTestChaser.validate
   def run
     run_human
     until (@human.dead? or @zombie_list.all_slain?)
-      run_zombie(@zombie_list.supply_next_zombie)
+      run_next_zombie
     end
     @interface.finish
   end
@@ -71,9 +64,8 @@ class World
     ! @human.dead?
   end
 
-  def create_zombie_using_test_unit_handler
-    raise "@test_pattern not defined?" if @test_pattern.nil?
-    zombie = Zombie.new_using_test_unit_handler(@test_pattern, self)
+  def run_next_zombie
+    run_zombie(@zombie_list.supply_next_zombie)
   end
 
   def run_zombie(zombie)

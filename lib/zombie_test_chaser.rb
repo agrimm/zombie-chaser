@@ -121,8 +121,7 @@ class ZombieTestChaser < Chaser
   end
 
   def zombie_survives?
-    zombie = self.class.world.create_zombie_using_test_unit_handler
-    self.class.world.run_zombie(zombie)
+    self.class.world.run_next_zombie
   end
 
   def initialize(klass_name=nil, method_name=nil)

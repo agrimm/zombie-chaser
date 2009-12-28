@@ -8,15 +8,18 @@ class Human < Actor
   attr_reader :successful_step_count
 
   def self.new_using_test_unit_handler(test_pattern, world)
-    new(test_pattern, world)
+    test_handler = TestUnitHandler.new(test_pattern)
+    human = new(test_handler, world)
+    human
   end
 
-  def initialize(test_pattern, world)
+  def initialize(test_handler, world)
     @status = nil #Currently only used by zombie
     @world = world
     @successful_step_count = 0
     @health = :alive
-    @test_handler = TestUnitHandler.new(test_pattern, self)
+    @test_handler = test_handler
+    @test_handler.set_actor(self)
   end
 
   def run
@@ -99,31 +102,9 @@ class MockHuman < Human
   private_class_method :new
 
   def self.new_using_results(results, world)
-    new(results, world)
-  end
-
-  def initialize(results, world)
-    @world = world
-    @results = results
-    @successful_step_count = 0
-    @health = :alive
-  end
-
-  def run
-    until @successful_step_count == @results.size
-      if @results[@successful_step_count] == :failure
-        @health = :dying
-        notify_world
-        return
-      end
-      notify_world
-      @successful_step_count += 1
-    end
-    notify_world
-  end
-
-  def test_suite_size
-    @results.size
+    test_handler = MockTestHandler.new(results)
+    mock_human = new(test_handler, world)
+    mock_human
   end
 end
 

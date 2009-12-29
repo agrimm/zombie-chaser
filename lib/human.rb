@@ -106,6 +106,10 @@ class MockHuman < Human
     mock_human = new(test_handler, world)
     mock_human
   end
+
+  def sleep(duration)
+    @world.sleep(duration)
+  end
 end
 
 class MockZombieList

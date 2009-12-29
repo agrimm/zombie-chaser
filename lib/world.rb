@@ -86,5 +86,8 @@ class World
     @interface.something_happened
   end
 
+  def sleep(duration)
+    @interface.sleep(duration)
+  end
 end
 

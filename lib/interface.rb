@@ -47,6 +47,9 @@ class ConsoleInterface < Interface
     (step_count * max_position / [@human.test_suite_size, max_position].max).round
   end
 
+  def sleep(duration)
+    super
+  end
 end
 
 class NoInterface < ConsoleInterface
@@ -58,6 +61,11 @@ class NoInterface < ConsoleInterface
 
   def finish
     #Do nothing
+  end
+
+  #No need to sleep for a mock interface
+  def sleep(duration)
+    0 #Number of seconds slept
   end
 end
 

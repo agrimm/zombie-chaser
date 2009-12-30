@@ -1,5 +1,9 @@
 class Interface
   attr_writer :human, :current_zombie
+
+  def sleep(duration)
+    super
+  end
 end
 
 class ConsoleInterface < Interface
@@ -47,9 +51,6 @@ class ConsoleInterface < Interface
     (step_count * max_position / [@human.test_suite_size, max_position].max).round
   end
 
-  def sleep(duration)
-    super
-  end
 end
 
 class NoInterface < ConsoleInterface

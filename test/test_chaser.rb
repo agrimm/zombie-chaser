@@ -136,9 +136,8 @@ end
 class ZombieTestChaserCase < Test::Unit::TestCase
   def test_detects_invalid_glob
     incorrect_glob = 'test\test_chaser.rb'
-    ZombieTestChaser.test_pattern = incorrect_glob
     assert_raise(RuntimeError, "Can't detect an incorrect glob") do
-      ZombieTestChaser.create_world
+      TestUnitHandler.new(incorrect_glob)
     end
   end
 end

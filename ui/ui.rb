@@ -1,3 +1,4 @@
+#Fixme: only require gosu if it's going to be used?
 begin
   require 'gosu'
 rescue LoadError => e

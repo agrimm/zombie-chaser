@@ -135,7 +135,7 @@ class Window < Gosu::Window
   end
 
   def draw_human
-    @human.draw
+    @human.draw if defined?(@human)
   end
 
   def draw_zombie

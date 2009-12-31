@@ -1,11 +1,12 @@
 require "test/unit/collector/objectspace"
 require "test/unit/ui/testrunnermediator"
 
+require "thread"
+
 class TestUnitHandler
-  attr_reader :test_suite_size
+  attr_reader :test_suite_size, :result_queue
 
   def initialize(test_pattern)
-    @actor = nil
     raise "Error: can't detect any files in test pattern \"#{test_pattern} (Don't forget to use forward slashes even in Windows)" if Dir.glob(test_pattern).empty?
     Dir.glob(test_pattern).each {|test| require test} #In heckle, this is separated out
     obj_sp = Test::Unit::Collector::ObjectSpace.new
@@ -15,6 +16,7 @@ class TestUnitHandler
     @test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
     @test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {test_failed}
     @test_runner_mediator.add_listener(Test::Unit::TestCase::FINISHED) {test_finished}
+    @result_queue = ResultQueue.new
   end
 
   def run
@@ -24,28 +26,22 @@ class TestUnitHandler
   end
 
   def test_failed
-    @actor.notify_failing_step
-    sleep 0.5
+    @result_queue.enq(:failure)
     throw :stop_test_runner
   end
 
   def test_finished
-    sleep 0.1 #Hack to avoid it being too quick
-    @actor.notify_passing_step
-  end
-
-  def set_actor(actor)
-    raise "Actor already set!" unless @actor.nil?
-    @actor = actor
+    @result_queue.enq(:pass)
   end
 
 end
 
 class MockTestHandler
+  attr_reader :result_queue
 
   def initialize(results)
     @results = results
-    @actor = nil
+    @result_queue = ResultQueue.new
   end
 
   def test_suite_size
@@ -54,20 +50,27 @@ class MockTestHandler
 
   def run
     @results.each do |result|
-      case result
-      when :pass
-        @actor.notify_passing_step
-      when :failure
-        @actor.notify_failing_step
-        break
-      else
-        raise "Unknown result"
-      end
+      @result_queue.enq(result)
+      break if result == :failure
     end
   end
 
-  def set_actor(actor)
-    raise "Actor already set!" unless @actor.nil?
-    @actor = actor
+end
+
+class ResultQueue
+  def initialize
+    @result_queue = Queue.new
+  end
+
+  def enq(result)
+    @result_queue << result
+  end
+
+  def empty?
+    @result_queue.empty?
+  end
+
+  def deq
+    @result_queue.deq
   end
 end

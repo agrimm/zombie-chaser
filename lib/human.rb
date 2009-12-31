@@ -19,12 +19,23 @@ class Human < Actor
     @successful_step_count = 0
     @health = :alive
     @test_handler = test_handler
-    @test_handler.set_actor(self)
   end
 
   def run
     notify_world
     @test_handler.run
+    result_queue = @test_handler.result_queue
+    #Assumption: @test_handler has been run
+    until result_queue.empty?
+      result = result_queue.deq
+      case result
+      when :pass
+        notify_passing_step
+      when :failure
+        notify_failing_step
+      else raise "Unknown result"
+      end
+    end
   end
 
   def current_symbol
@@ -60,11 +71,13 @@ class Human < Actor
 
   def notify_passing_step
     @successful_step_count += 1
+    sleep 0.1 #Hack to avoid it being too quick
     notify_world
   end
 
   def notify_failing_step
     @health = :dying
+    sleep 0.5
     notify_world
   end
 

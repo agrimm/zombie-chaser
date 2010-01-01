@@ -23,19 +23,27 @@ class Human < Actor
 
   def run
     notify_world
-    @test_handler.run
     result_queue = @test_handler.result_queue
-    #Assumption: @test_handler has been run
-    until result_queue.empty?
-      result = result_queue.deq
-      case result
-      when :pass
-        notify_passing_step
-      when :failure
-        notify_failing_step
-      else raise "Unknown result"
+    test_running_thread = Thread.new do
+      @test_handler.run
+    end
+    status_updating_thread = Thread.new do
+      while true
+        #Assumption: result_queue will end with :end_of_work
+        result = result_queue.deq
+        case result
+        when :pass
+          notify_passing_step
+        when :failure
+          notify_failing_step
+        when :end_of_work
+          break
+        else raise "Unknown result"
+        end
       end
     end
+    status_updating_thread.join
+    raise "Thread assumed to be finished is still running" if test_running_thread.alive?
   end
 
   def current_symbol
@@ -106,6 +114,8 @@ class Human < Actor
   end
 
   def test_suite_size
+    #This is valid from when @test_handler is initialized
+    #And that is done when human is initialized
     @test_handler.test_suite_size
   end
 

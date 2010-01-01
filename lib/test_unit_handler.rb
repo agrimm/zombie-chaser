@@ -23,6 +23,7 @@ class TestUnitHandler
     catch(:stop_test_runner) do
       @test_runner_mediator.run_suite
     end
+    @result_queue.enq(:end_of_work)
   end
 
   def test_failed
@@ -53,6 +54,7 @@ class MockTestHandler
       @result_queue.enq(result)
       break if result == :failure
     end
+    @result_queue.enq(:end_of_work)
   end
 
 end

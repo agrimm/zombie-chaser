@@ -43,7 +43,7 @@ class Human < Actor
       end
     end
     status_updating_thread.join
-    raise "Thread assumed to be finished is still running" if test_running_thread.alive?
+    test_running_thread.join
   end
 
   def current_symbol

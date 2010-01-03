@@ -18,6 +18,12 @@ module TestHumanHelper
     end
   end
 
+  def assert_that_representations_do_not_include(unexpected_representation, human_results, zombies_results, failure_message)
+    world = create_world(human_results, zombies_results)
+    actual_representations = world.interface.representations
+    assert_equal false, actual_representations.include?(unexpected_representation), failure_message + ": Didn't expect #{unexpected_representation}, got #{actual_representations.inspect}"
+  end
+
   def create_world(human_results, zombies_results = [])
     world = World.new_using_results(human_results, zombies_results)
     world.run
@@ -90,6 +96,15 @@ class TestZombie < Test::Unit::TestCase
     expected_representations = ["...@", "Z..@", ".*.@"]
     failure_message = "Can't represent a zombie slaying."
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
+  #Describes existing behaviour, but added to ensure a future commit works properly
+  def test_zombies_dont_appear_if_human_doesnt_survive_unit_tests
+    human_results = [:pass, :failure]
+    zombies_results = [[:pass, :failure]]
+    unexpected_representation = "Z+"
+    failure_message = "Doesn't stop after failed unmutated unit tests"
+    assert_that_representations_do_not_include(unexpected_representation, human_results, zombies_results, failure_message)
   end
 
 end

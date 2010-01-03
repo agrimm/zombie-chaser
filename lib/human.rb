@@ -22,28 +22,36 @@ class Human < Actor
   end
 
   def run
-    notify_world
-    result_queue = @test_handler.result_queue
     test_running_thread = Thread.new do
-      @test_handler.run
+      run_tests
     end
     status_updating_thread = Thread.new do
-      while true
-        #Assumption: result_queue will end with :end_of_work
-        result = result_queue.deq
-        case result
-        when :pass
-          notify_passing_step
-        when :failure
-          notify_failing_step
-        when :end_of_work
-          break
-        else raise "Unknown result"
-        end
-      end
+      update_view
     end
     status_updating_thread.join
     test_running_thread.join
+  end
+
+  def run_tests
+    @test_handler.run
+  end
+
+  def update_view
+    notify_world
+    result_queue = @test_handler.result_queue
+    while true
+      #Assumption: result_queue will end with :end_of_work
+      result = result_queue.deq
+      case result
+      when :pass
+        notify_passing_step
+      when :failure
+        notify_failing_step
+      when :end_of_work
+        break
+      else raise "Unknown result"
+      end
+    end
   end
 
   def current_symbol
@@ -155,7 +163,7 @@ class MockZombieList
     zombie
   end
 
-  def all_slain?
+  def all_zombies_run?
     @current_zombie_number == @zombies.length
   end
 end

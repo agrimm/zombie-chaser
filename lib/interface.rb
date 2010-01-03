@@ -14,13 +14,12 @@ class ConsoleInterface < Interface
   end
 
   def current_representation
-    if @current_zombie.nil?
-      "." * human_position + @human.current_symbol
-    elsif human_position > zombie_position
-      "." * zombie_position + @current_zombie.current_symbol + "." * (human_position - zombie_position - 1) + @human.current_symbol
-    else
-      "." * zombie_position + @current_zombie.current_symbol
+    result = "." * human_position + @human.current_symbol
+    unless @current_zombie.nil?
+      position = zombie_position
+      result[position..position] = @current_zombie.current_symbol
     end
+    result
   end
 
   def something_happened

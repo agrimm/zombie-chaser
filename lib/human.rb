@@ -167,39 +167,51 @@ class MockHuman < Human
   end
 end
 
-class MockZombieList
-
-  def self.new_using_results(zombies_results, world)
-    zombies = zombies_results.map do |zombie_results|
-      MockZombie.new_using_results(zombie_results, world)
-    end
-    new(zombies)
+class ZombieFactory
+  def initialize(test_pattern, world)
+    @test_pattern, @world = test_pattern, world
   end
 
-  def initialize(zombies)
-    @zombies = zombies
-    @current_zombie_number = 0
-  end
-
-  def supply_next_zombie
-    zombie = @zombies[@current_zombie_number]
-    @current_zombie_number += 1
-    zombie
+  def create_zombie
+    Zombie.new_using_test_unit_handler(@test_pattern, @world)
   end
 end
 
 class ZombieList
 
   def self.new_using_test_unit_handler(test_pattern, world)
-    new(test_pattern, world)
+    zombie_factory = ZombieFactory.new(test_pattern, world)
+    new(zombie_factory)
   end
 
-  def initialize(test_pattern, world)
-    @test_pattern, @world = test_pattern, world
+  def initialize(zombie_factory)
+    @zombie_factory = zombie_factory
   end
 
   def supply_next_zombie
-    zombie = Zombie.new_using_test_unit_handler(@test_pattern, @world)
+    @zombie_factory.create_zombie
+  end
+
+end
+
+class MockZombieFactory
+  def initialize(zombies_results, world)
+    @zombies_results, @world = zombies_results, world
+    @current_zombie_number = 0
+  end
+
+  def create_zombie
+    mock_zombie = MockZombie.new_using_results(@zombies_results[@current_zombie_number], @world)
+    @current_zombie_number += 1
+    mock_zombie
+  end
+end
+
+class MockZombieList < ZombieList
+
+  def self.new_using_results(zombies_results, world)
+    mock_zombie_factory = MockZombieFactory.new(zombies_results, world)
+    new(mock_zombie_factory)
   end
 
 end

@@ -24,6 +24,11 @@ module TestHumanHelper
     assert_equal false, actual_representations.include?(unexpected_representation), failure_message + ": Didn't expect #{unexpected_representation}, got #{actual_representations.inspect}"
   end
 
+  def assert_that_human_deadness_is(human_expected_to_die, human_results, zombies_results, failure_message)
+    world = create_world(human_results, zombies_results)
+    assert_equal human_expected_to_die, world.human_dead?, failure_message
+  end
+
   def create_world(human_results, zombies_results = [])
     world = World.new_using_results(human_results, zombies_results)
     human_survives = world.run_human
@@ -129,4 +134,16 @@ class TestConsoleInterface < Test::Unit::TestCase
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
   end
 
+end
+
+class TestZombieHumanInteraction < Test::Unit::TestCase
+  include TestHumanHelper
+
+  def test_zombies_eat_human
+    human_results = [:pass, :pass]
+    zombies_results = [[:pass, :pass]]
+    human_expected_to_die = true
+    failure_message = "Human not eaten"
+    assert_that_human_deadness_is human_expected_to_die, human_results, zombies_results, failure_message
+  end
 end

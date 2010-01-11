@@ -75,5 +75,10 @@ class World
   def sleep(duration)
     @interface.sleep(duration)
   end
+
+  #Assumption: this is called after human is in a valid state
+  def human_dead?
+    @human.dead?
+  end
 end
 

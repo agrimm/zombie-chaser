@@ -142,7 +142,7 @@ class Human < Actor
   end
 
   def get_eaten
-    @health = :dying unless dead?
+    @health = :dead unless dead?
   end
 
   def test_suite_size
@@ -246,15 +246,15 @@ module ZombieInterface
     90.0
   end
 
+  def eat(human)
+    @status = :attacking #Even if the human's dead, look for leftovers
+    human.get_eaten
+  end
 end
 
 class Zombie < Human
   include ZombieInterface
 
-  def eat(human)
-    @status = :attacking #Even if the human's dead, look for leftovers
-    human.get_eaten
-  end
 end
 
 class MockZombie < MockHuman #Fixme provide a proper hierarchy

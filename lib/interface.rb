@@ -33,10 +33,6 @@ class ConsoleInterface < Interface
     sleep 0.2
   end
 
-  def finish
-    puts
-  end
-
   def human_position
     adjust_for_screen_width(@human.successful_step_count)
   end
@@ -56,10 +52,6 @@ class NoInterface < ConsoleInterface
   attr_reader :representations
 
   def display_representation(representation)
-    #Do nothing
-  end
-
-  def finish
     #Do nothing
   end
 

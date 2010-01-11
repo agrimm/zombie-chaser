@@ -49,15 +49,6 @@ class World
     @zombie_list = zombie_list
   end
 
-  #FIXME currently only used by the unit tests. It is equivalent to ZombieTestChaser.validate
-  def run
-    run_human
-    unless @human.dead?
-      run_next_zombie until @zombie_list.all_zombies_run?
-    end
-    @interface.finish
-  end
-
   def run_human
     @human.run
     ! @human.dead?

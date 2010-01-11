@@ -26,7 +26,8 @@ module TestHumanHelper
 
   def create_world(human_results, zombies_results = [])
     world = World.new_using_results(human_results, zombies_results)
-    world.run
+    human_survives = world.run_human
+    zombies_results.size.times {world.run_next_zombie} if human_survives
     world
   end
 end

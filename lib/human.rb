@@ -186,10 +186,6 @@ class MockZombieList
     @current_zombie_number += 1
     zombie
   end
-
-  def all_zombies_run?
-    @current_zombie_number == @zombies.length
-  end
 end
 
 class ZombieList

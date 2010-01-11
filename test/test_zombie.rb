@@ -108,6 +108,14 @@ class TestZombie < Test::Unit::TestCase
     assert_that_representations_do_not_include(unexpected_representation, human_results, zombies_results, failure_message)
   end
 
+  def test_corpse_littered_landscape
+    human_results = [:pass, :pass, :pass]
+    zombies_results = [[:pass, :failure],[:failure]]
+    expected_representations = ["++.@"]
+    failure_message = "Can't display a corpse littered landscape"
+    assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
 end
 
 class TestConsoleInterface < Test::Unit::TestCase

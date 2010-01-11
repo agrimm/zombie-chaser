@@ -1,5 +1,5 @@
 class Interface
-  attr_writer :human, :current_zombie
+  attr_writer :human, :zombie_list
 
   def sleep(duration)
     super
@@ -10,14 +10,16 @@ class ConsoleInterface < Interface
 
   def initialize
     @representations = []
-    @current_zombie = nil
+    @zombie_list = nil
   end
 
   def current_representation
     result = "." * human_position + @human.current_symbol
-    unless @current_zombie.nil?
-      position = zombie_position
-      result[position..position] = @current_zombie.current_symbol
+    unless @zombie_list.nil?
+      @zombie_list.each_zombie do |zombie|
+        position = adjust_for_screen_width(zombie.successful_step_count)
+        result[position..position] = zombie.current_symbol
+      end
     end
     result
   end
@@ -35,10 +37,6 @@ class ConsoleInterface < Interface
 
   def human_position
     adjust_for_screen_width(@human.successful_step_count)
-  end
-
-  def zombie_position
-    adjust_for_screen_width(@current_zombie.successful_step_count)
   end
 
   def adjust_for_screen_width(step_count)
@@ -79,8 +77,8 @@ class GuiInterface < Interface
     @window.human = human
   end
 
-  def current_zombie=(current_zombie)
-    @window.current_zombie = current_zombie
+  def zombie_list=(zombie_list)
+    @window.zombie_list = zombie_list
   end
 
 end

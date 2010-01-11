@@ -186,12 +186,22 @@ class ZombieList
 
   def initialize(zombie_factory)
     @zombie_factory = zombie_factory
+    @zombies = []
   end
 
   def supply_next_zombie
-    @zombie_factory.create_zombie
+    zombie = @zombie_factory.create_zombie
+    @zombies << zombie
+    zombie
   end
 
+  def each_zombie
+    @zombies.each{|zombie| yield zombie}
+  end
+
+  def draw_zombies
+    each_zombie {|zombie| zombie.draw}
+  end
 end
 
 class MockZombieFactory

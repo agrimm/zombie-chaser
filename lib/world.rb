@@ -29,7 +29,6 @@ class World
 
   def initialize(interface_type)
     @human = nil
-    @current_zombie = nil
     @zombie_list = nil
     @interface = case interface_type
       when :console_interface then ConsoleInterface.new
@@ -47,6 +46,7 @@ class World
   def set_zombie_list(zombie_list)
     raise "Already set" unless @zombie_list.nil?
     @zombie_list = zombie_list
+    @interface.zombie_list = zombie_list
   end
 
   def run_human
@@ -59,15 +59,13 @@ class World
   end
 
   def run_zombie(zombie)
-    @current_zombie = zombie
-    @interface.current_zombie = zombie
     sleep 0.2
-    @current_zombie.run
-    unless @current_zombie.dead?
-      @current_zombie.eat(@human)
+    zombie.run
+    unless zombie.dead?
+      zombie.eat(@human)
       sleep 1
     end
-    ! @current_zombie.dead?
+    ! zombie.dead?
   end
 
   def something_happened

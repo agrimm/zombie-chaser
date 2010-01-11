@@ -82,7 +82,7 @@ class Window < Gosu::Window
   def self.height; @height end
 
   attr_accessor :grid
-  attr_writer :human, :current_zombie
+  attr_writer :human, :zombie_list
 
   def initialize
     super(self.class.width, self.class.height, false)
@@ -97,7 +97,7 @@ class Window < Gosu::Window
   def draw
     draw_scenery
     draw_human
-    draw_zombie
+    draw_zombies
   end
 
   def button_down(id)
@@ -138,8 +138,8 @@ class Window < Gosu::Window
     @human.draw if defined?(@human)
   end
 
-  def draw_zombie
-    @current_zombie.draw if defined?(@current_zombie)
+  def draw_zombies
+    @zombie_list.draw_zombies if defined?(@zombie_list)
   end
 
 end

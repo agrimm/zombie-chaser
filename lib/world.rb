@@ -60,7 +60,6 @@ class World
 
   def run_human
     @human.run
-    @human.finish_dying if @human.dying?
     ! @human.dead?
   end
 
@@ -73,9 +72,7 @@ class World
     @interface.current_zombie = zombie
     sleep 0.2
     @current_zombie.run
-    if @current_zombie.dying?
-      @current_zombie.finish_dying
-    else
+    unless @current_zombie.dead?
       @current_zombie.eat(@human)
       sleep 1
     end

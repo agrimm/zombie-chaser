@@ -19,16 +19,21 @@ class Human < Actor
     @successful_step_count = 0
     @health = :alive
     @test_handler = test_handler
+    @view_queue = Queue.new
   end
 
   def run
     test_running_thread = Thread.new do
       run_tests
     end
+    view_queue_updating_thread = Thread.new do
+      build_view_queue
+    end
     status_updating_thread = Thread.new do
       update_view
     end
     status_updating_thread.join
+    view_queue_updating_thread.join
     test_running_thread.join
   end
 
@@ -36,20 +41,38 @@ class Human < Actor
     @test_handler.run
   end
 
-  def update_view
-    notify_world
-    result_queue = @test_handler.result_queue
+  def build_view_queue
     while true
-      #Assumption: result_queue will end with :end_of_work
-      result = result_queue.deq
+      result = @test_handler.result_queue.deq #Slight law of demeter violation
       case result
       when :pass
-        notify_passing_step
+        @view_queue.enq(:passing_step)
       when :failure
-        notify_failing_step
+        @view_queue.enq(:start_dying)
+        @view_queue.enq(:finish_dying)
+      when :end_of_work
+        @view_queue.enq(:end_of_work)
+        break
+      else raise "Unknown result!"
+      end
+    end
+    @view_queue.enq(:end_of_work)
+  end
+
+  def update_view
+    notify_world
+    while true
+      result = @view_queue.deq
+      case result
+      when :passing_step
+        notify_passing_step
+      when :start_dying
+        notify_start_dying
+      when :finish_dying
+        notify_finish_dying
       when :end_of_work
         break
-      else raise "Unknown result"
+      else raise "Unknown result!"
       end
     end
   end
@@ -91,7 +114,7 @@ class Human < Actor
     notify_world
   end
 
-  def notify_failing_step
+  def notify_start_dying
     @health = :dying
     sleep 0.5
     notify_world
@@ -100,12 +123,13 @@ class Human < Actor
   def dying?
     @health == :dying
   end
+  private :dying?
 
   def dead?
     @health == :dead
   end
 
-  def finish_dying
+  def notify_finish_dying
     sleep 0.5
     raise "I'm not dead yet!" unless dying?
     @health = :dead

@@ -61,10 +61,6 @@ class World
   def run_zombie(zombie)
     sleep 0.2
     zombie.run
-    unless zombie.dead?
-      zombie.eat(@human)
-      sleep 1
-    end
     ! zombie.dead?
   end
 
@@ -74,6 +70,10 @@ class World
 
   def sleep(duration)
     @interface.sleep(duration)
+  end
+
+  def notify_human_eaten
+    @human.get_eaten
   end
 
   #Assumption: this is called after human is in a valid state

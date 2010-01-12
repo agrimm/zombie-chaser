@@ -71,6 +71,7 @@ class Human < Actor
       when :finish_dying
         notify_finish_dying
       when :end_of_work
+        notify_finished
         break
       else raise "Unknown result!"
       end
@@ -135,6 +136,10 @@ class Human < Actor
     @health = :dead
     notify_world
     sleep 0.5
+  end
+
+  def notify_finished
+    #Do nothing in humans
   end
 
   def notify_world
@@ -246,10 +251,17 @@ module ZombieInterface
     90.0
   end
 
-  def eat(human)
-    @status = :attacking #Even if the human's dead, look for leftovers
-    human.get_eaten
+  def notify_finished
+    eat_human unless dead?
   end
+
+  def eat_human
+    @status = :attacking #Even if the human's dead, look for leftovers
+    @world.notify_human_eaten
+    sleep 1
+    @status = nil
+  end
+
 end
 
 class Zombie < Human

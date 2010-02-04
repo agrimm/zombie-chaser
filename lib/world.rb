@@ -35,6 +35,7 @@ class World
       when :no_interface then NoInterface.new
       when :gui_interface then GuiInterface.new
     end
+    @view_update_threads = nil
   end
 
   def set_human(human)
@@ -49,19 +50,28 @@ class World
     @interface.zombie_list = zombie_list
   end
 
+  def while_world_running
+    @view_update_threads = Queue.new
+    yield
+    @view_update_threads.enq(:end_of_work)
+    thread = @view_update_threads.deq
+    until thread == :end_of_work
+      thread.join
+      thread = @view_update_threads.deq
+    end
+  end
+
   def run_human
     @human.run
     ! @human.dead?
   end
 
   def run_next_zombie
-    run_zombie(@zombie_list.supply_next_zombie)
-  end
-
-  def run_zombie(zombie)
     sleep 0.2
-    zombie.run
-    ! zombie.dead?
+    zombie = @zombie_list.supply_next_zombie
+    @view_update_threads.enq(Thread.new{zombie.build_view_queue})
+    @view_update_threads.enq(Thread.new{zombie.update_view})
+    zombie.run_tests
   end
 
   def something_happened

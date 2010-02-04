@@ -65,38 +65,41 @@ class ZombieTestChaser < Chaser
 
     chaser = self.new(klass_name)
 
-    passed = chaser.human_survives?
-
-    unless force or passed then
-      abort "Initial run of tests failed... fix and run chaser again"
-    end
-
-    if self.guess_timeout? then
-      running_time = Time.now - initial_time
-      adjusted_timeout = (running_time * 2 < 5) ? 5 : (running_time * 2).ceil
-      self.timeout = adjusted_timeout
-    end
-
-    puts "Timeout set to #{adjusted_timeout} seconds."
-
-    if passed then
-      puts "Initial tests pass. Let's rumble."
-    else
-      puts "Initial tests failed but you forced things. Let's rumble."
-    end
-    puts
-
     counts = Hash.new(0)
 
-    klass_names = klass_name ? Array(klass_name) : self.current_class_names(["Test"]) - pre_existing_class_names
-    klass_names.each do |block_klass_name|
-      block_klass = block_klass_name.to_class
+    chaser.while_world_running do
 
-      methods = method_name ? Array(method_name) : block_klass.instance_methods(false) + block_klass.singleton_methods(false).collect {|meth| "self.#{meth}"}
+      passed = chaser.human_survives?
 
-      methods.sort.each do |block_method_name|
-        result = self.new(block_klass_name, block_method_name).validate
-        counts[result] += 1
+      unless force or passed then
+        abort "Initial run of tests failed... fix and run chaser again"
+      end
+
+      if self.guess_timeout? then
+        running_time = Time.now - initial_time
+        adjusted_timeout = (running_time * 2 < 5) ? 5 : (running_time * 2).ceil
+        self.timeout = adjusted_timeout
+      end
+
+      puts "Timeout set to #{adjusted_timeout} seconds."
+
+      if passed then
+        puts "Initial tests pass. Let's rumble."
+      else
+        puts "Initial tests failed but you forced things. Let's rumble."
+      end
+      puts
+
+      klass_names = klass_name ? Array(klass_name) : self.current_class_names(["Test"]) - pre_existing_class_names
+      klass_names.each do |block_klass_name|
+        block_klass = block_klass_name.to_class
+
+        methods = method_name ? Array(method_name) : block_klass.instance_methods(false) + block_klass.singleton_methods(false).collect {|meth| "self.#{meth}"}
+
+        methods.sort.each do |block_method_name|
+          result = self.new(block_klass_name, block_method_name).validate
+          counts[result] += 1
+        end
       end
     end
     all_good = counts[false] == 0
@@ -122,6 +125,10 @@ class ZombieTestChaser < Chaser
 
   def zombie_survives?
     self.class.world.run_next_zombie
+  end
+
+  def while_world_running
+    self.class.world.while_world_running{yield}
   end
 
   def initialize(klass_name=nil, method_name=nil)

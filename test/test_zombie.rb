@@ -24,15 +24,36 @@ module TestHumanHelper
     assert_equal false, actual_representations.include?(unexpected_representation), failure_message + ": Didn't expect #{unexpected_representation}, got #{actual_representations.inspect}"
   end
 
+  def assert_that_representations_include_regexp_match(expected_regexp, human_results, zombies_results, failure_message)
+    world = create_world(human_results, zombies_results)
+    actual_representations = world.interface.representations
+    assert actual_representations.any?{|actual_representation| actual_representation =~ expected_regexp}, failure_message + ": Expected #{expected_regexp.inspect} would match something in #{actual_representations.inspect}"
+  end
+
   def assert_that_human_deadness_is(human_expected_to_die, human_results, zombies_results, failure_message)
     world = create_world(human_results, zombies_results)
     assert_equal human_expected_to_die, world.human_dead?, failure_message
   end
 
+  def assert_that_counts_are(expected_counts, human_results, zombies_results, failure_message)
+    world = World.new_using_results(human_results, zombies_results)
+    actual_counts = Hash.new(0)
+    world.while_world_running do
+      assert world.run_human, "Human unexpectedly died"
+      zombies_results.size.times do
+        result = world.run_next_zombie
+        actual_counts[result] += 1
+      end
+    end
+    assert_equal expected_counts, actual_counts, failure_message
+  end
+
   def create_world(human_results, zombies_results = [])
     world = World.new_using_results(human_results, zombies_results)
-    human_survives = world.run_human
-    zombies_results.size.times {world.run_next_zombie} if human_survives
+    world.while_world_running do
+      human_survives = world.run_human
+      zombies_results.size.times {world.run_next_zombie} if human_survives
+    end
     world
   end
 end
@@ -121,6 +142,13 @@ class TestZombie < Test::Unit::TestCase
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
   end
 
+  def test_multiple_living_zombies_visible
+    human_results = [:pass] * 10
+    zombies_results = [[:pass]* 8 + [:failure]] * 5
+    expected_regexp = /ZZ/
+    failure_message = "Can't display multiple zombies at once"
+    assert_that_representations_include_regexp_match(expected_regexp, human_results, zombies_results, failure_message)
+  end
 end
 
 class TestConsoleInterface < Test::Unit::TestCase
@@ -146,4 +174,25 @@ class TestZombieHumanInteraction < Test::Unit::TestCase
     failure_message = "Human not eaten"
     assert_that_human_deadness_is human_expected_to_die, human_results, zombies_results, failure_message
   end
+end
+
+class TestResultsReporting < Test::Unit::TestCase
+  include TestHumanHelper
+
+  def test_killed_zombies_reported_as_success
+    human_results = [:pass]
+    zombies_results = [[:failure]]
+    expected_counts = {true=>1}
+    failure_message = "All zombies killed not regarded as all good"
+    assert_that_counts_are expected_counts, human_results, zombies_results, failure_message
+  end
+
+  def test_unkilled_zombies_reported_as_failure
+    human_results = [:pass]
+    zombies_results = [[:pass]]
+    expected_counts = {false => 1}
+    failure_message = "Unkilled zombie not regarded as a problem"
+    assert_that_counts_are expected_counts, human_results, zombies_results, failure_message
+  end
+
 end

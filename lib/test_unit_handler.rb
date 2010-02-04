@@ -24,10 +24,12 @@ class TestUnitHandler
       @test_runner_mediator.run_suite
     end
     @result_queue.enq(:end_of_work)
+    @failure_encountered
   end
 
   def test_failed
     @result_queue.enq(:failure)
+    @failure_encountered = true
     throw :stop_test_runner
   end
 
@@ -43,6 +45,7 @@ class MockTestHandler
   def initialize(results)
     @results = results
     @result_queue = ResultQueue.new
+    @failure_encountered = false
   end
 
   def test_suite_size
@@ -52,9 +55,13 @@ class MockTestHandler
   def run
     @results.each do |result|
       @result_queue.enq(result)
-      break if result == :failure
+      if result == :failure
+        @failure_encountered = true
+        break
+      end
     end
     @result_queue.enq(:end_of_work)
+    @failure_encountered
   end
 
 end

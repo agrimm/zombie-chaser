@@ -39,9 +39,12 @@ class ConsoleInterface < Interface
     adjust_for_screen_width(@human.successful_step_count)
   end
 
+  def maximum_position
+    78 #Fixme make configurable
+  end
+
   def adjust_for_screen_width(step_count)
-    max_position = 78.0
-    (step_count * max_position / [@human.test_suite_size, max_position].max).round
+    (step_count * 1.0 * maximum_position / [@human.test_suite_size, maximum_position].max).round
   end
 
 end

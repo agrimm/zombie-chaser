@@ -49,7 +49,7 @@ class ConsoleInterface < Interface
 
   def no_living_zombies_apart_from_me?(desired_step_count, actor)
     desired_position = adjust_for_screen_width(desired_step_count)
-    return true if desired_position == adjust_for_screen_width(1) #Hack to allow multiple zombies at the start
+    return true if desired_position == adjust_for_screen_width(0) #Hack to allow multiple zombies at the start
     return true if desired_position == adjust_for_screen_width(@human.test_suite_size) #Always room for one more at the dinner table!
     @zombie_list.each_zombie do |zombie|
       next if zombie.equal? actor

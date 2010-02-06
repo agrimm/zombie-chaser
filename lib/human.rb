@@ -110,9 +110,14 @@ class Human < Actor
   end
 
   def notify_passing_step
+    sleep 0.1 until no_other_living_zombies_in?(@successful_step_count + 1)
     @successful_step_count += 1
     sleep 0.1 #Hack to avoid it being too quick
     notify_world
+  end
+
+  def no_other_living_zombies_in?(desired_step_count)
+    @world.no_living_zombies_apart_from_me?(desired_step_count, self)
   end
 
   def notify_start_dying

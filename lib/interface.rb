@@ -47,6 +47,18 @@ class ConsoleInterface < Interface
     (step_count * 1.0 * maximum_position / [@human.test_suite_size, maximum_position].max).round
   end
 
+  def no_living_zombies_apart_from_me?(desired_step_count, actor)
+    desired_position = adjust_for_screen_width(desired_step_count)
+    return true if desired_position == adjust_for_screen_width(1) #Hack to allow multiple zombies at the start
+    return true if desired_position == adjust_for_screen_width(@human.test_suite_size) #Always room for one more at the dinner table!
+    @zombie_list.each_zombie do |zombie|
+      next if zombie.equal? actor
+      next if zombie.dead?
+      zombie_position = adjust_for_screen_width(zombie.successful_step_count)
+      return false if zombie_position == desired_position
+    end
+    true
+  end
 end
 
 class NoInterface < ConsoleInterface
@@ -58,7 +70,7 @@ class NoInterface < ConsoleInterface
 
   #No need to sleep for a mock interface
   def sleep(duration)
-    0 #Number of seconds slept
+    super(duration/1000.0) * 1000.0 #Not sure if it's needed, but just to be on the safe side
   end
 end
 
@@ -82,6 +94,10 @@ class GuiInterface < Interface
 
   def zombie_list=(zombie_list)
     @window.zombie_list = zombie_list
+  end
+
+  def no_living_zombies_apart_from_me?(desired_step_count, actor)
+    @window.no_living_zombies_apart_from_me?(desired_step_count, actor)
   end
 
 end

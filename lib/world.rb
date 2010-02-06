@@ -90,5 +90,9 @@ class World
   def human_dead?
     @human.dead?
   end
+
+  def no_living_zombies_apart_from_me?(desired_step_count, actor)
+    @interface.no_living_zombies_apart_from_me?(desired_step_count, actor)
+  end
 end
 

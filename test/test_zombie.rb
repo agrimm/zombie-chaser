@@ -48,6 +48,14 @@ module TestHumanHelper
     assert_equal expected_counts, actual_counts, failure_message
   end
 
+  def assert_does_not_deadlock(human_results, zombies_results, failure_message)
+    assert_nothing_raised(failure_message) do
+      timeout(1) do
+        world = create_world(human_results, zombies_results)
+      end
+    end
+  end
+
   def create_world(human_results, zombies_results = [])
     world = World.new_using_results(human_results, zombies_results)
     world.while_world_running do
@@ -160,6 +168,21 @@ class TestConsoleInterface < Test::Unit::TestCase
     expected_representations = ["Z" + "." * 77 + "@"] #Having 80 characters in a line doesn't work
     failure_message = "Doesn't handle large number of tests properly"
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
+  def test_zombies_do_not_trample_non_dead_zombies
+    human_results = [:pass, :pass]
+    zombies_results = [[:pass, :failure], [:pass, :pass]]
+    expected_representations = ["Z*@", "Z+@"] #Which should be followed with ".Z@" and ".+Z"
+    failure_message = "Zombies are trampling on non-dead zombies"
+    assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
+  def test_multiple_successful_zombies_do_not_deadlock
+    human_results = [:pass] * 2
+    zombies_results = [[:pass] * 2] * 2
+    failure_message = "Multiple successful zombies deadlock (pardon the pun)"
+    assert_does_not_deadlock(human_results, zombies_results, failure_message)
   end
 
 end

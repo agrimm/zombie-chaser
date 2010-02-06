@@ -51,10 +51,14 @@ class Actor
     image.draw_rot(x, y, z, actor_direction)
   end
 
-  def x
+  def calculate_x(successful_step_count)
     max_position = Window.width - 10
     left_offset = 10
-    left_offset + ((@successful_step_count * 10) * (max_position - left_offset) / [test_suite_size * 10 + 10, (max_position - left_offset)].max).round
+    left_offset + ((successful_step_count * 10) * (max_position - left_offset) / [test_suite_size * 10 + 10, (max_position - left_offset)].max).round
+  end
+
+  def x
+    calculate_x(@successful_step_count)
   end
 
   def y
@@ -140,6 +144,19 @@ class Window < Gosu::Window
 
   def draw_zombies
     @zombie_list.draw_zombies if defined?(@zombie_list)
+  end
+
+  def no_living_zombies_apart_from_me?(desired_step_count, actor)
+    desired_position = actor.calculate_x(desired_step_count)
+    return true if desired_position == actor.calculate_x(1) #Hack for multiple zombies at the start
+    return true if desired_position == actor.calculate_x(@human.test_suite_size) #Always room for one more at the dinner table!
+    @zombie_list.each_zombie do |zombie|
+      next if zombie.equal? actor
+      next if zombie.dead?
+      zombie_position = zombie.x
+      return false if zombie_position == desired_position
+    end
+    true
   end
 
 end

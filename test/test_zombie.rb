@@ -173,7 +173,7 @@ class TestConsoleInterface < Test::Unit::TestCase
   def test_zombies_do_not_trample_non_dead_zombies
     human_results = [:pass, :pass]
     zombies_results = [[:pass, :failure], [:pass, :pass]]
-    expected_representations = ["Z*@", "Z+@"] #Which should be followed with ".Z@" and ".+Z"
+    expected_representations = ["Z*@", "Z+@"]
     failure_message = "Zombies are trampling on non-dead zombies"
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
   end

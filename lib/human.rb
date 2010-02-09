@@ -112,6 +112,7 @@ class Human < Actor
   def notify_passing_step
     shuffle_in_one_place until no_other_living_zombies_in?(@successful_step_count + 1)
     @successful_step_count += 1
+    increase_angle_by(13) if defined?(@actor_direction)
     sleep 0.1 #Hack to avoid it being too quick
     notify_world
   end

@@ -110,7 +110,7 @@ class Human < Actor
   end
 
   def notify_passing_step
-    sleep 0.1 until no_other_living_zombies_in?(@successful_step_count + 1)
+    shuffle_in_one_place until no_other_living_zombies_in?(@successful_step_count + 1)
     @successful_step_count += 1
     sleep 0.1 #Hack to avoid it being too quick
     notify_world
@@ -252,8 +252,16 @@ module ZombieInterface
     'zombie'
   end
 
-  def actor_direction
-    90.0
+  def shuffle_in_one_place
+    shuffle_amount = 17
+    increase_angle_by(shuffle_amount)
+    sleep 0.1
+  end
+
+  def increase_angle_by(amount)
+    minimum_angle = 70
+    maximum_angle = 110
+    @actor_direction = (@actor_direction + amount - minimum_angle) % (maximum_angle - minimum_angle) + minimum_angle
   end
 
   def notify_finished
@@ -270,11 +278,24 @@ module ZombieInterface
 end
 
 class Zombie < Human
+  attr_reader :actor_direction
+
   include ZombieInterface
 
+  def initialize(*args)
+    @actor_direction = 90
+    super
+  end
 end
 
 class MockZombie < MockHuman #Fixme provide a proper hierarchy
+  attr_reader :actor_direction
+
   include ZombieInterface
+
+  def initialize(*args)
+    @actor_direction = 90
+    super
+  end
 
 end

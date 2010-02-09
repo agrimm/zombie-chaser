@@ -19,7 +19,7 @@ rescue LoadError => e
 end
 
 class ZIndex
-  LAYERS = [:world, :dead, :human, :zombie, :overlay]
+  LAYERS = [:world, :dead, :actor, :attacking, :overlay]
 
   def self.for(type); LAYERS.index(type) end
 end
@@ -66,8 +66,13 @@ class Actor
   end
 
   def z
-    #(data['state'] == 'dead') ? ZIndex.for(:dead) : ZIndex.for(data['type'].to_sym)
-    ZIndex.for(:human)
+    case actor_state
+    when "dead" then ZIndex.for(:dead)
+    when "attacking" then ZIndex.for(:attacking)
+    when "moving" then ZIndex.for(:actor)
+    when "dying" then ZIndex.for(:actor)
+    else raise "Unknown state"
+    end
   end
 
   def window

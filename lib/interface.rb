@@ -52,7 +52,7 @@ class ConsoleInterface < Interface
     return true if desired_position == adjust_for_screen_width(0) #Hack to allow multiple zombies at the start
     return true if desired_position == adjust_for_screen_width(@human.test_suite_size) #Always room for one more at the dinner table!
     @zombie_list.each_zombie do |zombie|
-      next if zombie.equal? actor
+      return true if zombie.equal? actor #If you're not changing locations, then allow the increase in step count
       next if zombie.dead?
       zombie_position = adjust_for_screen_width(zombie.successful_step_count)
       return false if zombie_position == desired_position

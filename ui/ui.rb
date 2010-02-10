@@ -156,7 +156,7 @@ class Window < Gosu::Window
     return true if desired_position == actor.calculate_x(0) #Hack for multiple zombies at the start
     return true if desired_position == actor.calculate_x(@human.test_suite_size) #Always room for one more at the dinner table!
     @zombie_list.each_zombie do |zombie|
-      next if zombie.equal? actor
+      return true if zombie.equal? actor #If you're not changing locations, then allow the increase in step count
       next if zombie.dead?
       zombie_position = zombie.x
       return false if zombie_position == desired_position

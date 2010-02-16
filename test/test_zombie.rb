@@ -41,7 +41,11 @@ module TestHumanHelper
     world.while_world_running do
       assert world.run_human, "Human unexpectedly died"
       zombies_results.size.times do
-        result = world.run_next_zombie
+        begin
+          result = world.run_next_zombie
+        rescue Timeout::Error
+          result = true
+        end
         actual_counts[result] += 1
       end
     end
@@ -60,7 +64,15 @@ module TestHumanHelper
     world = World.new_using_results(human_results, zombies_results)
     world.while_world_running do
       human_survives = world.run_human
-      zombies_results.size.times {world.run_next_zombie} if human_survives
+      if human_survives
+        zombies_results.size.times do
+          begin
+            world.run_next_zombie
+          rescue Timeout::Error
+            #Don't worry about it
+          end
+        end
+      end
     end
     world
   end
@@ -157,6 +169,13 @@ class TestZombie < Test::Unit::TestCase
     failure_message = "Can't display multiple zombies at once"
     assert_that_representations_include_regexp_match(expected_regexp, human_results, zombies_results, failure_message)
   end
+
+  def test_timeouts_in_test_dont_cause_frozen_zombies
+    human_results = [:pass]
+    zombies_results = [[:timeout]]
+    failure_message = "Doesn't handle timeouts"
+    assert_does_not_deadlock(human_results, zombies_results, failure_message)
+  end
 end
 
 class TestConsoleInterface < Test::Unit::TestCase
@@ -215,6 +234,14 @@ class TestResultsReporting < Test::Unit::TestCase
     zombies_results = [[:pass]]
     expected_counts = {false => 1}
     failure_message = "Unkilled zombie not regarded as a problem"
+    assert_that_counts_are expected_counts, human_results, zombies_results, failure_message
+  end
+
+  def test_timeouts_reported_as_success
+    human_results = [:pass]
+    zombies_results = [[:timeout]]
+    expected_counts = {true => 1}
+    failure_message = "Zombie causing timeout not regarded as all good"
     assert_that_counts_are expected_counts, human_results, zombies_results, failure_message
   end
 

@@ -20,10 +20,16 @@ class TestUnitHandler
   end
 
   def run
-    catch(:stop_test_runner) do
-      @test_runner_mediator.run_suite
+    begin
+      catch(:stop_test_runner) do
+        @test_runner_mediator.run_suite
+      end
+    rescue Chaser::Timeout
+      @result_queue.enq(:failure)
+      raise
+    ensure
+      @result_queue.enq(:end_of_work)
     end
-    @result_queue.enq(:end_of_work)
     @failure_encountered
   end
 
@@ -53,14 +59,18 @@ class MockTestHandler
   end
 
   def run
-    @results.each do |result|
-      @result_queue.enq(result)
-      if result == :failure
-        @failure_encountered = true
-        break
+    begin
+      @results.each do |result|
+        raise Timeout::Error, "Out of time" if result == :timeout
+        @result_queue.enq(result)
+        if result == :failure
+          @failure_encountered = true
+          break
+        end
       end
+    ensure
+      @result_queue.enq(:end_of_work)
     end
-    @result_queue.enq(:end_of_work)
     @failure_encountered
   end
 

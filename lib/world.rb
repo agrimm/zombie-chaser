@@ -59,6 +59,7 @@ class World
       thread.join
       thread = @view_update_threads.deq
     end
+    @interface.finish_if_neccessary
   end
 
   def run_human

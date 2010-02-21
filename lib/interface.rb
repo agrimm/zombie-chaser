@@ -4,6 +4,9 @@ class Interface
   def sleep(duration)
     super
   end
+
+  def finish_if_neccessary
+  end
 end
 
 class ConsoleInterface < Interface
@@ -100,4 +103,7 @@ class GuiInterface < Interface
     @window.no_living_zombies_apart_from_me?(desired_step_count, actor)
   end
 
+  def finish_if_neccessary
+    @window_showing_thread.join
+  end
 end

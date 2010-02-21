@@ -10,7 +10,7 @@ rescue LoadError => e
       def initialize(one, two, three)
       end
     end
-    
+
     class Image
       def initialize(*args)
       end
@@ -48,6 +48,7 @@ class Actor
   end
 
   def draw
+    raise "actor is off the screen" unless (x > 0 and x < self.class.window.width and y > 0 and y < self.class.window.height)
     image.draw_rot(x, y, z, actor_direction)
   end
 

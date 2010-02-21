@@ -65,7 +65,7 @@ class ZombieTestChaser < Chaser
 
     chaser = self.new(klass_name)
 
-    counts = Hash.new(0)
+    all_good = nil
 
     chaser.while_world_running do
 
@@ -90,6 +90,8 @@ class ZombieTestChaser < Chaser
       end
       puts
 
+      counts = Hash.new(0)
+
       klass_names = klass_name ? Array(klass_name) : self.current_class_names(["Test"]) - pre_existing_class_names
       klass_names.each do |block_klass_name|
         block_klass = block_klass_name.to_class
@@ -101,21 +103,21 @@ class ZombieTestChaser < Chaser
           counts[result] += 1
         end
       end
+      all_good = counts[false] == 0
+
+      puts "Chaser Results:"
+      puts
+      puts "Passed    : %3d" % counts[true]
+      puts "Failed    : %3d" % counts[false]
+      puts
+
+      if all_good then
+        puts "All chasing was thwarted! YAY!!!"
+      else
+        puts "Improve the tests and try again."
+      end
+
     end
-    all_good = counts[false] == 0
-
-    puts "Chaser Results:"
-    puts
-    puts "Passed    : %3d" % counts[true]
-    puts "Failed    : %3d" % counts[false]
-    puts
-
-    if all_good then
-      puts "All chasing was thwarted! YAY!!!"
-    else
-      puts "Improve the tests and try again."
-    end
-
     all_good
   end
 

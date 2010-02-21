@@ -53,9 +53,15 @@ class Actor
   end
 
   def calculate_x(successful_step_count)
-    max_position = Window.width - 10
-    left_offset = 10
-    left_offset + ((successful_step_count * 10) * (max_position - left_offset) / [test_suite_size * 10 + 10, (max_position - left_offset)].max).round
+    preferred_step_size = 10
+    max_distance = ([Window.width, Window.height].min / 2) - preferred_step_size
+    (Window.width / 2) + Math::sin(@angle) * ((test_suite_size - successful_step_count) * preferred_step_size) * [1, max_distance * 1.0 / (test_suite_size * preferred_step_size)].min
+  end
+
+  def calculate_y(successful_step_count)
+    preferred_step_size = 10
+    max_distance = ([Window.width, Window.height].min / 2) - preferred_step_size
+    ((Window.height / 2) + Math::cos(@angle) * ((test_suite_size - successful_step_count) * preferred_step_size) * [1, max_distance * 1.0 / (test_suite_size * preferred_step_size)].min)
   end
 
   def x
@@ -63,7 +69,7 @@ class Actor
   end
 
   def y
-    100
+    calculate_y(@successful_step_count)
   end
 
   def z

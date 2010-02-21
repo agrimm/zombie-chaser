@@ -20,6 +20,7 @@ class Human < Actor
     @health = :alive
     @test_handler = test_handler
     @view_queue = Queue.new
+    @angle = Math::PI * rand * 2.0
   end
 
   def run
@@ -106,13 +107,13 @@ class Human < Actor
   end
 
   def actor_direction
-    270.0
+    @angle * -360.0 / (2 * Math::PI)
   end
 
   def notify_passing_step
     shuffle_in_one_place until no_other_living_zombies_in?(@successful_step_count + 1)
     @successful_step_count += 1
-    increase_angle_by(13) if defined?(@actor_direction)
+    increase_angle_by(13) if defined?(@lurch_offset)
     sleep 0.1 #Hack to avoid it being too quick
     notify_world
   end
@@ -260,9 +261,9 @@ module ZombieInterface
   end
 
   def increase_angle_by(amount)
-    minimum_angle = 70
-    maximum_angle = 110
-    @actor_direction = (@actor_direction + amount - minimum_angle) % (maximum_angle - minimum_angle) + minimum_angle
+    minimum_lurch_offset = -20
+    maximum_lurch_offset = 20
+    @lurch_offset = (@lurch_offset + amount - minimum_lurch_offset) % (maximum_lurch_offset - minimum_lurch_offset) + minimum_lurch_offset
   end
 
   def notify_finished
@@ -279,23 +280,23 @@ module ZombieInterface
 end
 
 class Zombie < Human
-  attr_reader :actor_direction
-
   include ZombieInterface
 
   def initialize(*args)
-    @actor_direction = 90
+    @lurch_offset = 0
     super
+  end
+
+  def actor_direction
+    (@angle * -360.0 / (2 * Math::PI) + @lurch_offset)
   end
 end
 
 class MockZombie < MockHuman #Fixme provide a proper hierarchy
-  attr_reader :actor_direction
-
   include ZombieInterface
 
   def initialize(*args)
-    @actor_direction = 90
+    @lurch_offset = 0
     super
   end
 

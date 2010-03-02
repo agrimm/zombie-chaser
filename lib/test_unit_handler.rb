@@ -17,6 +17,7 @@ class TestUnitHandler
     @test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {test_failed}
     @test_runner_mediator.add_listener(Test::Unit::TestCase::FINISHED) {test_finished}
     @result_queue = ResultQueue.new
+    @failure_encountered = false
   end
 
   def run

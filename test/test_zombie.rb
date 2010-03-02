@@ -42,7 +42,9 @@ module TestHumanHelper
       assert world.run_human, "Human unexpectedly died"
       zombies_results.size.times do
         begin
-          result = world.run_next_zombie
+          # Chaser#validate returns true if chaser-proof, and false if mutations to it still pass its unit tests
+          # Hence the "not" in the next line
+          result = (not world.run_next_zombie)
         rescue Timeout::Error
           result = true
         end

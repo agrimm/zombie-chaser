@@ -30,7 +30,7 @@ class TestUnitHandler
     ensure
       @result_queue.enq(:end_of_work)
     end
-    @failure_encountered
+    not @failure_encountered
   end
 
   def test_failed
@@ -71,7 +71,7 @@ class MockTestHandler
     ensure
       @result_queue.enq(:end_of_work)
     end
-    @failure_encountered
+    not @failure_encountered
   end
 
 end

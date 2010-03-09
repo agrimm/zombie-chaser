@@ -18,6 +18,14 @@ module TestHumanHelper
     end
   end
 
+  def assert_adjusted_width_representations_include_representations(expected_representations, human_results, zombies_results, console_width, failure_message)
+    world = create_world_with_set_console_width(human_results, zombies_results, console_width)
+    actual_representations = world.interface.representations
+    expected_representations.each do |expected_representation|
+      assert actual_representations.include?(expected_representation), failure_message + ": Expected #{expected_representation}, got #{actual_representations.inspect}"
+    end
+  end
+
   def assert_that_representations_do_not_include(unexpected_representation, human_results, zombies_results, failure_message)
     world = create_world(human_results, zombies_results)
     actual_representations = world.interface.representations
@@ -183,12 +191,28 @@ end
 class TestConsoleInterface < Test::Unit::TestCase
   include TestHumanHelper
 
+  #Put inside of this test case so that only things with this test case's teardown can use it
+  def create_world_with_set_console_width(human_results, zombies_results, width)
+    ConsoleInterface.width = width
+    world = create_world(human_results, zombies_results)
+    world
+  end
+
   def test_excessive_tests_dont_make_it_run_off_the_page
     human_results = [:pass] * 500
     zombies_results = [[:pass, :failure]]
     expected_representations = ["Z" + "." * 77 + "@"] #Having 80 characters in a line doesn't work
     failure_message = "Doesn't handle large number of tests properly"
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
+  def test_console_width_configurable
+    human_results = [:pass] * 500
+    zombies_results = [[:pass, :failure]]
+    console_width = 11
+    expected_representations = ["Z" + "." * 9 + "@"]
+    failure_message = "Doesn't allow console width to be configurable"
+    assert_adjusted_width_representations_include_representations(expected_representations, human_results, zombies_results, console_width, failure_message)
   end
 
   def test_zombies_do_not_trample_non_dead_zombies
@@ -204,6 +228,10 @@ class TestConsoleInterface < Test::Unit::TestCase
     zombies_results = [[:pass] * 2] * 2
     failure_message = "Multiple successful zombies deadlock (pardon the pun)"
     assert_does_not_deadlock(human_results, zombies_results, failure_message)
+  end
+
+  def teardown
+    ConsoleInterface.width = 79
   end
 
 end

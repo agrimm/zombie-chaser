@@ -10,6 +10,10 @@ class Interface
 end
 
 class ConsoleInterface < Interface
+  @width = 79 #Fixme check that it should be 79 not 80 in Windows command prompt
+
+  def self.width=(width); @width = width end
+  def self.width; @width end
 
   def initialize
     @representations = []
@@ -43,7 +47,7 @@ class ConsoleInterface < Interface
   end
 
   def maximum_position
-    78 #Fixme make configurable
+    ConsoleInterface.width - 1 #Subtract one as position is zero-indexed
   end
 
   def adjust_for_screen_width(step_count)

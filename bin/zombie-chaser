@@ -40,8 +40,9 @@ opts = OptionParser.new do |opts|
     puts "Setting timeout at #{timeout} seconds."
   end
 
-  opts.on("--width PIXELS", "Width of screen in pixels") do |width|
+  opts.on("--width PIXELS", "Width of screen in pixels (or that of a console interface in characters)") do |width|
     Window.width = Integer(width)
+    ConsoleInterface.width = Integer(width)
   end
 
   opts.on("--height PIXELS", "Height of screen in pixels") do |height|

@@ -68,7 +68,8 @@ class World
   end
 
   def run_next_zombie
-    sleep 0.2
+    # Since zombies can come from multiple directions, rather than queueing against each other,
+    # separating out when they appear isn't required
     zombie = @zombie_list.supply_next_zombie
     @view_update_threads.enq(Thread.new{zombie.build_view_queue})
     @view_update_threads.enq(Thread.new{zombie.update_view})

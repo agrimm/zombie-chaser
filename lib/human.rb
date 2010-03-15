@@ -114,7 +114,7 @@ class Human < Actor
     shuffle_in_one_place until no_other_living_zombies_in?(@successful_step_count + 1)
     @successful_step_count += 1
     increase_angle_by(13) if defined?(@lurch_offset)
-    sleep 0.1 #Hack to avoid it being too quick
+    sleep([0.1, 2.0 / test_suite_size].min)
     notify_world
   end
 

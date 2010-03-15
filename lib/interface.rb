@@ -39,7 +39,6 @@ class ConsoleInterface < Interface
   def display_representation(representation)
     print "\r", representation
     STDOUT.flush
-    sleep 0.2
   end
 
   def human_position

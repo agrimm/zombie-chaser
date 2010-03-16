@@ -158,16 +158,8 @@ class Window < Gosu::Window
     @zombie_list.draw_zombies if defined?(@zombie_list)
   end
 
+  #No longer a major issue now zombies approach from all directions in GUI mode
   def no_living_zombies_apart_from_me?(desired_step_count, actor)
-    desired_position = actor.calculate_x(desired_step_count)
-    return true if desired_position == actor.calculate_x(0) #Hack for multiple zombies at the start
-    return true if desired_position == actor.calculate_x(@human.test_suite_size) #Always room for one more at the dinner table!
-    @zombie_list.each_zombie do |zombie|
-      return true if zombie.equal? actor #If you're not changing locations, then allow the increase in step count
-      next if zombie.dead?
-      zombie_position = zombie.x
-      return false if zombie_position == desired_position
-    end
     true
   end
 

@@ -336,36 +336,44 @@ class Chaser
   end
 
   class Reporter
+    def initialize(interface)
+      @interface = interface
+    end
+
     def method_loaded(klass_name, method_name)
       info "#{klass_name}\##{method_name} loaded"
     end
 
     def warning(message)
-      puts "!" * 70
-      puts "!!! #{message}"
-      puts "!" * 70
-      puts
+      interface_puts "!" * 70
+      interface_puts "!!! #{message}"
+      interface_puts "!" * 70
+      interface_puts
     end
 
     def info(message)
-      puts "*"*70
-      puts "***  #{message}"
-      puts "*"*70
-      puts
+      interface_puts "*"*70
+      interface_puts "***  #{message}"
+      interface_puts "*"*70
+      interface_puts
     end
 
     def report_failure
-      puts
-      puts "The affected method didn't cause test failures."
-      puts
+      interface_puts
+      interface_puts "The affected method didn't cause test failures."
+      interface_puts
     end
 
     def no_surviving_mutant
-      puts "The mutant didn't survive. Cool!\n\n"
+      interface_puts "The mutant didn't survive. Cool!\n\n"
     end
 
     def report_test_failures
-      puts "Tests failed -- this is good" if Chaser.debug
+      interface_puts "Tests failed -- this is good" if Chaser.debug
+    end
+
+    def interface_puts(*args)
+      @interface.interface_puts(*args)
     end
   end
 

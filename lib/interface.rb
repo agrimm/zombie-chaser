@@ -7,6 +7,11 @@ class Interface
 
   def finish_if_neccessary
   end
+
+  def interface_puts(*args)
+    puts(*args)
+    STDOUT.flush
+  end
 end
 
 class ConsoleInterface < Interface
@@ -18,6 +23,7 @@ class ConsoleInterface < Interface
   def initialize
     @representations = []
     @zombie_list = nil
+    @progress_text_being_printed = false
   end
 
   def current_representation
@@ -38,7 +44,13 @@ class ConsoleInterface < Interface
 
   def display_representation(representation)
     print "\r", representation
+    @progress_text_being_printed = true
     STDOUT.flush
+  end
+
+  def interface_puts(*args)
+    print_newline_if_neccessary
+    super
   end
 
   def human_position
@@ -65,6 +77,18 @@ class ConsoleInterface < Interface
     end
     true
   end
+
+  def print_newline_if_neccessary
+    if @progress_text_being_printed
+      puts
+      @progress_text_being_printed = false
+    end
+  end
+
+  def finish_if_neccessary
+    print_newline_if_neccessary
+  end
+
 end
 
 class NoInterface < ConsoleInterface

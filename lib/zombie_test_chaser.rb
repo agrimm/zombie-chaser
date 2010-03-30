@@ -134,8 +134,8 @@ class ZombieTestChaser < Chaser
   end
 
   def initialize(klass_name=nil, method_name=nil)
-    super
     self.class.create_world unless @@tests_loaded
+    super(klass_name, method_name, Reporter.new(self.class.world.interface))
   end
 
 end

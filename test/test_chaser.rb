@@ -24,7 +24,17 @@ class TestChaser < Chaser
   end
 end
 
+module ChaserTestCaseHelper
+  def create_chaser(klass_name, method_name)
+    # Fixme the third variable is for a reporter. The fact that it's not being used suggests that we're not using
+    # the whole of the TestChaser, and ought to split it up into smaller classes
+    TestChaser.new(klass_name, method_name, nil)
+  end
+end
+
 class ChaserTestCase < Test::Unit::TestCase
+  include ChaserTestCaseHelper
+
   unless defined? Mini then
     undef_method :default_test
     alias :refute_equal :assert_not_equal
@@ -43,7 +53,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_modify_and_unmodify_instance_method
-    @chaser = TestChaser.new("Chased", "add")
+    @chaser = create_chaser("Chased", "add")
     chased = Chased.new
     assert_equal 5, chased.add(2,3), "method has been modified before it should have been"
     @chaser.modify_method
@@ -53,7 +63,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_modify_and_unmodify_string
-    @chaser = TestChaser.new("Chased", "say_hello")
+    @chaser = create_chaser("Chased", "say_hello")
     chased = Chased.new
     assert_equal "G'day!", chased.say_hello, "method has been modified before it should have been"
     @chaser.modify_method
@@ -63,7 +73,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_modify_and_unmodify_class_method
-    @chaser = TestChaser.new("Chased", "self.static_method")
+    @chaser = create_chaser("Chased", "self.static_method")
     assert_equal "Zap!", Chased.static_method, "class method has been modified before it should have been"
     @chaser.modify_method
     assert_equal "l33t h4x0r", Chased.static_method, "class method hasn't been modified"
@@ -72,7 +82,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_pass_blocks_on_in_instance_methods
-    @chaser = TestChaser.new("Chased", "block_yielding_instance_method")
+    @chaser = create_chaser("Chased", "block_yielding_instance_method")
     chased = Chased.new
     assert_equal [2,4,6], chased.block_using_instance_method, "block yielding instance method has been modified before it should have been"
     @chaser.modify_method
@@ -82,7 +92,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_pass_blocks_on_in_class_methods
-    @chaser = TestChaser.new("Chased", "self.block_yielding_class_method")
+    @chaser = create_chaser("Chased", "self.block_yielding_class_method")
     assert_equal [2,4], Chased.block_using_class_method, "block yielding class method has been modified before it should have been"
     @chaser.modify_method
     assert_equal [12, 14], Chased.block_using_class_method, "yielded values haven't been modified"
@@ -91,7 +101,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_handle_funny_characters_in_instance_method_names
-    @chaser = TestChaser.new("Chased", "[]")
+    @chaser = create_chaser("Chased", "[]")
     chased = Chased.new
     assert_equal 2, chased[1], "Original doesn't work"
     @chaser.modify_method
@@ -101,7 +111,7 @@ class ChaserTestCase < Test::Unit::TestCase
   end
 
   def test_handle_funny_characters_in_class_method_names
-    @chaser = TestChaser.new("Chased", "self.[]")
+    @chaser = create_chaser("Chased", "self.[]")
     assert_equal 2, Chased[1], "Original doesn't work"
     @chaser.modify_method
     assert_equal 7, Chased[1], "Modified doesn't work"
@@ -111,7 +121,7 @@ class ChaserTestCase < Test::Unit::TestCase
 
   def test_more_funny_characters
     assert_nothing_raised("Can't handle certain characters") do
-      @chaser = TestChaser.new("Chased", "question?")
+      @chaser = create_chaser("Chased", "question?")
       chased = Chased.new
       chased.question?
       @chaser.modify_method
@@ -121,7 +131,7 @@ class ChaserTestCase < Test::Unit::TestCase
     end
 
     assert_nothing_raised("Can't handle equal signs") do
-      @chaser = TestChaser.new("Chased", "foo=")
+      @chaser = create_chaser("Chased", "foo=")
       chased = Chased.new
       chased.foo= 1
       @chaser.modify_method

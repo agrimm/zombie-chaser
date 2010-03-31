@@ -184,6 +184,7 @@ class Chaser
       end
     EOM
     @klass.class_eval do
+      remove_method(chaser.clean_method_name.to_sym)
       eval(workaround_method_code_string)
     end
     @klass.send(:define_method, chaser_proxy_method_name) do |block, *args|
@@ -199,6 +200,11 @@ class Chaser
     chaser = self
     @mutated = true
     @old_method = aliasing_class(@method_name).instance_method(clean_method_name)
+
+    aliasing_class(@method_name).class_eval do
+      remove_method(chaser.clean_method_name.to_sym)
+    end
+
     chaser_proxy_method_name = calculate_proxy_method_name(clean_method_name)
     workaround_method_code_string = <<-EOM
       def #{@method_name}(*args, &block)

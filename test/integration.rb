@@ -13,7 +13,7 @@ class TestIntegration < Test::Unit::TestCase
 
   EXAMPLE_DIRECTORY = "../exemplor-chaser-sample_target/"
   LARGE_TEST_EXAMPLE_DIRECTORY = "../bioruby-blessed/"
-  BIT_BUCKET_FILENAME = "/dev/null" # Fixme make this windows-compatible?
+  BIT_BUCKET_FILENAME = RUBY_PLATFORM =~ /mswin/ ? 'NUL:' : '/dev/null'
 
   def setup
     raise "Don't have example directory" unless File.exist?(EXAMPLE_DIRECTORY)

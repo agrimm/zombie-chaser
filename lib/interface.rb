@@ -15,7 +15,7 @@ class Interface
 end
 
 class ConsoleInterface < Interface
-  @width = 79 #Fixme check that it should be 79 not 80 in Windows command prompt
+  @width = 79 #Having a value of 80 causes problems for Windows console sessions.
 
   def self.width=(width); @width = width end
   def self.width; @width end

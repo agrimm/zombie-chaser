@@ -7,7 +7,7 @@ class TestUnitHandler
   attr_reader :test_suite_size, :result_queue
 
   def initialize(test_pattern)
-    raise "Error: can't detect any files in test pattern \"#{test_pattern} (Don't forget to use forward slashes even in Windows)" if Dir.glob(test_pattern).empty?
+    raise "Error: can't detect any files in test pattern #{test_pattern.inspect} (Don't forget to use forward slashes even in Windows)" if Dir.glob(test_pattern).empty?
     Dir.glob(test_pattern).each {|test| require test} #In heckle, this is separated out
     obj_sp = Test::Unit::Collector::ObjectSpace.new
     test_suite = Test::Unit::TestSuite.new("Mutation slayer test suite")

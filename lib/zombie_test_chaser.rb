@@ -81,14 +81,14 @@ class ZombieTestChaser < Chaser
         self.timeout = adjusted_timeout
       end
 
-      puts "Timeout set to #{adjusted_timeout} seconds."
+      chaser.interface_puts "Timeout set to #{adjusted_timeout} seconds."
 
       if passed then
-        puts "Initial tests pass. Let's rumble."
+        chaser.interface_puts "Initial tests pass. Let's rumble."
       else
-        puts "Initial tests failed but you forced things. Let's rumble."
+        chaser.interface_puts "Initial tests failed but you forced things. Let's rumble."
       end
-      puts
+      chaser.interface_puts
 
       counts = Hash.new(0)
 
@@ -105,16 +105,16 @@ class ZombieTestChaser < Chaser
       end
       all_good = counts[false] == 0
 
-      puts "Chaser Results:"
-      puts
-      puts "Passed    : %3d" % counts[true]
-      puts "Failed    : %3d" % counts[false]
-      puts
+      chaser.interface_puts "Chaser Results:",
+                            "",
+                            "Passed    : %3d" % counts[true],
+                            "Failed    : %3d" % counts[false],
+                            ""
 
       if all_good then
-        puts "All chasing was thwarted! YAY!!!"
+        chaser.interface_puts "All chasing was thwarted! YAY!!!"
       else
-        puts "Improve the tests and try again."
+        chaser.interface_puts "Improve the tests and try again."
       end
 
     end

@@ -44,4 +44,9 @@ class TestIntegration < Test::Unit::TestCase
     assert_no_match(/\.\.\.\.\.\.\.\.\.\.\./, output_text, "Doesn't allow console width to be configurable")
   end
 
+  def test_summary_not_interrupted_by_progress_bar
+    output_text = output_text_for_command("ruby -I../bioruby-blessed/lib/ bin/zombie-chaser Bio::Sequence::NA --test ../bioruby-blessed/test/unit/bio/sequence/test_na.rb --console")
+    assert_match(/Chaser Results:..Passed    : +\d+.Failed    : +\d+/m, output_text, "Summary interrupted by progress bar")
+  end
+
 end

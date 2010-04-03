@@ -13,12 +13,16 @@ Then the zombies chase after you. Each zombie represents a mutation to your code
 
 == REQUIREMENTS:
 
-* Gosu
+* Gosu (optional)
 * Test-unit (for ruby 1.9)
 
 == INSTALL:
 
 * sudo gem install zombie-chaser
+
+* Don't use sudo if it's not applicable (can't or don't want to use root, or you're using Windows)
+* Gosu is listed as a dependency, so that it's installed by default. If you can't install it, tell rubygems to force installation without dependencies.
+* If you're installing on installing for ruby 1.9, you'll need to install the gem version of test-unit.
 
 == LICENSE:
 

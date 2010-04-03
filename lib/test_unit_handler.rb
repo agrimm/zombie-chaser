@@ -16,7 +16,7 @@ class TestUnitHandler
     @test_runner_mediator =  Test::Unit::UI::TestRunnerMediator.new(test_suite)
     @test_runner_mediator.add_listener(Test::Unit::TestResult::FAULT) {test_failed}
     @test_runner_mediator.add_listener(Test::Unit::TestCase::FINISHED) {test_finished}
-    @result_queue = ResultQueue.new
+    @result_queue = Queue.new
     @failure_encountered = false
   end
 
@@ -51,7 +51,7 @@ class MockTestHandler
 
   def initialize(results)
     @results = results
-    @result_queue = ResultQueue.new
+    @result_queue = Queue.new
     @failure_encountered = false
   end
 
@@ -75,22 +75,4 @@ class MockTestHandler
     not @failure_encountered
   end
 
-end
-
-class ResultQueue
-  def initialize
-    @result_queue = Queue.new
-  end
-
-  def enq(result)
-    @result_queue << result
-  end
-
-  def empty?
-    @result_queue.empty?
-  end
-
-  def deq
-    @result_queue.deq
-  end
 end

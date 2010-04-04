@@ -231,6 +231,15 @@ class TestConsoleInterface < Test::Unit::TestCase
     assert_does_not_deadlock(human_results, zombies_results, failure_message)
   end
 
+  #Confirming existing behaviour
+  def test_zombie_does_not_deadlock_when_console_position_adjusted
+    ConsoleInterface.width = 10
+    human_results = [:pass] * 25
+    zombies_results = [[:pass]*25]
+    failure_message = "A zombie that isn't changing squares because of width limitations deadlocks (pardon the pun)"
+    assert_does_not_deadlock(human_results, zombies_results, failure_message)
+  end
+
   def teardown
     ConsoleInterface.width = 79
   end

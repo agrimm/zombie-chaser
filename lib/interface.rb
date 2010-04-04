@@ -81,8 +81,9 @@ class ConsoleInterface < Interface
     desired_position = adjust_for_screen_width(desired_step_count)
     return true if desired_position == adjust_for_screen_width(0) #Hack to allow multiple zombies at the start
     return true if desired_position == adjust_for_screen_width(@human.test_suite_size) #Always room for one more at the dinner table!
+    return true if desired_position == adjust_for_screen_width(actor.successful_step_count) #In case there's no advancement involved, and there's multiple zombies in a square even though they shouldn't be
     @zombie_list.each_zombie do |zombie|
-      return true if zombie.equal? actor #If you're not changing locations, then allow the increase in step count
+      next if zombie.equal? actor #Only checking for collisions with other actors, not with itself
       next if zombie.dead?
       zombie_position = adjust_for_screen_width(zombie.successful_step_count)
       return false if zombie_position == desired_position

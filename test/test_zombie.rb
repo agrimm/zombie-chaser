@@ -2,6 +2,7 @@ $: << "lib"
 
 require "test/unit"
 require "world"
+require "timeout"
 
 module TestHumanHelper
   def assert_that_representations_include(expected_representation, human_results, failure_message)

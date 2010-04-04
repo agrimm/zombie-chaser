@@ -86,6 +86,7 @@ class ConsoleInterface < Interface
       next if zombie.equal? actor #Only checking for collisions with other actors, not with itself
       next if zombie.dead?
       zombie_position = adjust_for_screen_width(zombie.successful_step_count)
+      #raise if adjust_for_screen_width(actor.successful_step_count) == zombie_position
       return false if zombie_position == desired_position
     end
     true

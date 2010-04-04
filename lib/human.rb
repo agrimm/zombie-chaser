@@ -111,8 +111,19 @@ class Human < Actor
   end
 
   def notify_passing_step
-    shuffle_in_one_place until no_other_living_zombies_in?(@successful_step_count + 1)
-    @successful_step_count += 1
+    break_out_of_loop = false
+    while true
+      # This synchronization doesn't actually work. The unit test dont_test_zombies_do_not_collide seem to pass on 1.8 and fail on 1.9, though it could be coincidence.
+      # Fixme Find out why my use of synchronization doesn't work, while remembering that select is not broken.
+      @world.synchronize_for_collision_detection do
+        if no_other_living_zombies_in?(@successful_step_count + 1)
+          @successful_step_count += 1
+          break_out_of_loop = true
+        end
+      end
+      break if break_out_of_loop
+      shuffle_in_one_place
+    end
     increase_angle_by(13) if defined?(@lurch_offset)
     sleep([0.1, 2.0 / test_suite_size].min)
     notify_world

@@ -39,6 +39,12 @@ module TestHumanHelper
     assert actual_representations.any?{|actual_representation| actual_representation =~ expected_regexp}, failure_message + ": Expected #{expected_regexp.inspect} would match something in #{actual_representations.inspect}"
   end
 
+  def assert_that_representations_do_not_include_regexp_match(unexpected_regexp, human_results, zombies_results, failure_message)
+    world = create_world(human_results, zombies_results)
+    actual_representations = world.interface.representations
+    assert_equal false, actual_representations.any?{|actual_representation| puts actual_representation if actual_representation =~ unexpected_regexp; actual_representation =~ unexpected_regexp}, failure_message + ": Didn't expect #{unexpected_regexp.inspect} would match something in #{actual_representations.inspect}"
+  end
+
   def assert_that_human_deadness_is(human_expected_to_die, human_results, zombies_results, failure_message)
     world = create_world(human_results, zombies_results)
     assert_equal human_expected_to_die, world.human_dead?, failure_message
@@ -222,6 +228,16 @@ class TestConsoleInterface < Test::Unit::TestCase
     expected_representations = ["Z*@", "Z+@"]
     failure_message = "Zombies are trampling on non-dead zombies"
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
+  end
+
+  def dont_test_zombies_do_not_collide
+    human_results = [:pass] * 10
+    zombies_results = [[:pass] * 10, [:pass] * 10]
+    unexpected_regexp = /\A\.\.+Z\.+\@/ #Only one square with zombies, the second zombie should have appeared by now, and the human hasn't been eaten
+    failure_message = "Zombies are sharing the same square"
+    100.times do |i|
+      assert_that_representations_do_not_include_regexp_match(unexpected_regexp, human_results, zombies_results, failure_message + "(attempt #{i})")
+    end
   end
 
   def test_multiple_successful_zombies_do_not_deadlock

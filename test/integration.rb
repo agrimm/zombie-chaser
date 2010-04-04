@@ -29,6 +29,11 @@ class TestIntegration < Test::Unit::TestCase
     assert_equal true, system("ruby -I../exemplor-chaser-sample_target bin/zombie-chaser MyMath --tests ../exemplor-chaser-sample_target/full_test_unit.rb --console > #{BIT_BUCKET_FILENAME}"), "Doesn't regard complete tests as a success"
   end
 
+  def test_class_methods_dont_cause_errors
+    output_text = output_text_for_command("ruby -I../bioruby-blessed/lib/ bin/zombie-chaser Bio::Sequence::NA --test ../bioruby-blessed/test/unit/bio/sequence/test_na.rb --console")
+    assert_match(/Chaser Results/, output_text, "Error raised during test due to class methods")
+  end
+
   def test_messages_arent_on_same_line_as_nethack_representation
     output_text = output_text_for_command("ruby -I../exemplor-chaser-sample_target bin/zombie-chaser MyMath --tests ../exemplor-chaser-sample_target/full_test_unit.rb --console")
     assert_no_match(/@.*The mutant didn't survive/, output_text, "Doesn't put messages on a new line")

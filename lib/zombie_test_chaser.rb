@@ -98,7 +98,7 @@ class ZombieTestChaser < Chaser
 
         methods = method_name ? Array(method_name) : block_klass.instance_methods(false) + block_klass.singleton_methods(false).collect {|meth| "self.#{meth}"}
 
-        methods.sort.each do |block_method_name|
+        methods.sort_by{|x| x.to_s}.each do |block_method_name|
           result = self.new(block_klass_name, block_method_name).validate
           counts[result] += 1
         end

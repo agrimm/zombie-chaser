@@ -1,13 +1,12 @@
-#Fixme: only require gosu if it's going to be used?
 begin
   require 'gosu'
 rescue LoadError => e
-  puts "gosu gem not available! Using fake implementations of Gosu."
   require 'ostruct'
   module Gosu
     class Window
       attr_accessor :caption, :grid
       def initialize(one, two, three)
+        abort "Gosu not installed. Please use the --console option, or install gosu"
       end
     end
 

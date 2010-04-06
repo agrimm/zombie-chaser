@@ -4,12 +4,9 @@ Zombie chaser is a graphic(al) interface to mutation testing. Kill off the mutan
 
 The human running across the screen represents the normal running of your unit tests. If one of them fails, then the human dies.
 
-Then the zombies chase after you. Each zombie represents a mutation to your code. If your unit tests detect that something's wrong with your code, then the mutation gets killed. Otherwise, the zombie gets to meet you.
+Then the zombies chase after you. Each zombie represents a mutation to your code (your code doing something it shouldn't be doing). If your unit tests detect that something's wrong with your code, then the mutation gets killed. Otherwise, the zombie gets to meat you.
 
-== FEATURES/PROBLEMS:
-
-* Code is slightly different to chaser.
-* Not quite finished.
+There are two alternatives for the interface. One is a GUI, while the other is a nethack-style interface that runs within the console itself. Zombie-chaser aims to be compatible with any flavor of ruby on any platform.
 
 == REQUIREMENTS:
 
@@ -22,7 +19,12 @@ Then the zombies chase after you. Each zombie represents a mutation to your code
 
 * Don't use sudo if it's not applicable (can't or don't want to use root, or you're using Windows)
 * Gosu is listed as a dependency, so that it's installed by default. If you can't install it, tell rubygems to force installation without dependencies.
-* If you're installing on installing for ruby 1.9, you'll need to install the gem version of test-unit.
+* If you're using ruby 1.9, you'll need to install the gem version of test-unit.
+
+== CURRENT BUGS:
+
+* Resource-intensive tests are especially slow in GUI mode for some reason. Run them in console mode (using --console) to make the program run faster.
+* Very occasionally, the program can crash, possibly because of threading issues. Please notify me if it becomes a consistent problem.
 
 == LICENSE:
 

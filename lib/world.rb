@@ -36,6 +36,7 @@ class World
       when :gui_interface then GuiInterface.new
     end
     @view_update_threads = nil
+    @collision_detection_lock = Monitor.new
   end
 
   def set_human(human)
@@ -74,6 +75,10 @@ class World
     @view_update_threads.enq(Thread.new{zombie.build_view_queue})
     @view_update_threads.enq(Thread.new{zombie.update_view})
     zombie.run_tests
+  end
+
+  def synchronize_for_collision_detection
+    @collision_detection_lock.synchronize {yield}
   end
 
   def something_happened

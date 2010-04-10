@@ -1,3 +1,5 @@
+require "monitor"
+
 class Interface
   attr_writer :human, :zombie_list
 
@@ -15,7 +17,7 @@ class Interface
 end
 
 class ConsoleInterface < Interface
-  @width = 79 #Fixme check that it should be 79 not 80 in Windows command prompt
+  @width = 79 #Having a value of 80 causes problems for Windows console sessions.
 
   def self.width=(width); @width = width end
   def self.width; @width end
@@ -24,6 +26,7 @@ class ConsoleInterface < Interface
     @representations = []
     @zombie_list = nil
     @progress_text_being_printed = false
+    @output_lock = Monitor.new
   end
 
   def current_representation
@@ -36,10 +39,13 @@ class ConsoleInterface < Interface
     end
     result
   end
+  private :current_representation
 
   def something_happened
-    @representations << current_representation
-    display_representation(@representations.last)
+    @output_lock.synchronize do
+      @representations << current_representation
+      display_representation(@representations.last)
+    end
   end
 
   def display_representation(representation)
@@ -47,32 +53,40 @@ class ConsoleInterface < Interface
     @progress_text_being_printed = true
     STDOUT.flush
   end
+  private :display_representation
 
   def interface_puts(*args)
-    print_newline_if_neccessary
-    super
+    @output_lock.synchronize do
+      print_newline_if_neccessary
+      super
+    end
   end
 
   def human_position
     adjust_for_screen_width(@human.successful_step_count)
   end
+  private :human_position
 
   def maximum_position
     ConsoleInterface.width - 1 #Subtract one as position is zero-indexed
   end
+  private :maximum_position
 
   def adjust_for_screen_width(step_count)
     (step_count * 1.0 * maximum_position / [@human.test_suite_size, maximum_position].max).round
   end
+  private :adjust_for_screen_width
 
   def no_living_zombies_apart_from_me?(desired_step_count, actor)
     desired_position = adjust_for_screen_width(desired_step_count)
     return true if desired_position == adjust_for_screen_width(0) #Hack to allow multiple zombies at the start
     return true if desired_position == adjust_for_screen_width(@human.test_suite_size) #Always room for one more at the dinner table!
+    return true if desired_position == adjust_for_screen_width(actor.successful_step_count) #In case there's no advancement involved, and there's multiple zombies in a square even though they shouldn't be
     @zombie_list.each_zombie do |zombie|
-      return true if zombie.equal? actor #If you're not changing locations, then allow the increase in step count
+      next if zombie.equal? actor #Only checking for collisions with other actors, not with itself
       next if zombie.dead?
       zombie_position = adjust_for_screen_width(zombie.successful_step_count)
+      #raise if adjust_for_screen_width(actor.successful_step_count) == zombie_position
       return false if zombie_position == desired_position
     end
     true
@@ -84,9 +98,12 @@ class ConsoleInterface < Interface
       @progress_text_being_printed = false
     end
   end
+  private :print_newline_if_neccessary
 
   def finish_if_neccessary
-    print_newline_if_neccessary
+    @output_lock.synchronize do
+      print_newline_if_neccessary
+    end
   end
 
 end

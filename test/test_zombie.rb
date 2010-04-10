@@ -2,6 +2,7 @@ $: << "lib"
 
 require "test/unit"
 require "world"
+require "timeout"
 
 module TestHumanHelper
   def assert_that_representations_include(expected_representation, human_results, failure_message)
@@ -36,6 +37,12 @@ module TestHumanHelper
     world = create_world(human_results, zombies_results)
     actual_representations = world.interface.representations
     assert actual_representations.any?{|actual_representation| actual_representation =~ expected_regexp}, failure_message + ": Expected #{expected_regexp.inspect} would match something in #{actual_representations.inspect}"
+  end
+
+  def assert_that_representations_do_not_include_regexp_match(unexpected_regexp, human_results, zombies_results, failure_message)
+    world = create_world(human_results, zombies_results)
+    actual_representations = world.interface.representations
+    assert_equal false, actual_representations.any?{|actual_representation| puts actual_representation if actual_representation =~ unexpected_regexp; actual_representation =~ unexpected_regexp}, failure_message + ": Didn't expect #{unexpected_regexp.inspect} would match something in #{actual_representations.inspect}"
   end
 
   def assert_that_human_deadness_is(human_expected_to_die, human_results, zombies_results, failure_message)
@@ -223,10 +230,29 @@ class TestConsoleInterface < Test::Unit::TestCase
     assert_that_representations_include_these_representations(expected_representations, human_results, zombies_results, failure_message)
   end
 
+  def dont_test_zombies_do_not_collide
+    human_results = [:pass] * 10
+    zombies_results = [[:pass] * 10, [:pass] * 10]
+    unexpected_regexp = /\A\.\.+Z\.+\@/ #Only one square with zombies, the second zombie should have appeared by now, and the human hasn't been eaten
+    failure_message = "Zombies are sharing the same square"
+    100.times do |i|
+      assert_that_representations_do_not_include_regexp_match(unexpected_regexp, human_results, zombies_results, failure_message + "(attempt #{i})")
+    end
+  end
+
   def test_multiple_successful_zombies_do_not_deadlock
     human_results = [:pass] * 2
     zombies_results = [[:pass] * 2] * 2
     failure_message = "Multiple successful zombies deadlock (pardon the pun)"
+    assert_does_not_deadlock(human_results, zombies_results, failure_message)
+  end
+
+  #Confirming existing behaviour
+  def test_zombie_does_not_deadlock_when_console_position_adjusted
+    ConsoleInterface.width = 10
+    human_results = [:pass] * 25
+    zombies_results = [[:pass]*25]
+    failure_message = "A zombie that isn't changing squares because of width limitations deadlocks (pardon the pun)"
     assert_does_not_deadlock(human_results, zombies_results, failure_message)
   end
 

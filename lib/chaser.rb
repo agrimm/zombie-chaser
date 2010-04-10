@@ -76,6 +76,11 @@ class Chaser
     @@guess_timeout
   end
 
+  #For the benefit of puts calls in ZombieTestChaser.validate
+  def interface_puts(*args)
+    @reporter.interface_puts(*args)
+  end
+
   ##
   # Creates a new Chaser that will chase +klass_name+ and +method_name+,
   # sending results to +reporter+.
@@ -351,23 +356,23 @@ class Chaser
     end
 
     def warning(message)
-      interface_puts "!" * 70
-      interface_puts "!!! #{message}"
-      interface_puts "!" * 70
-      interface_puts
+      interface_puts "!" * 70,
+                     "!!! #{message}",
+                     "!" * 70,
+                     ""
     end
 
     def info(message)
-      interface_puts "*"*70
-      interface_puts "***  #{message}"
-      interface_puts "*"*70
-      interface_puts
+      interface_puts "*"*70,
+                     "***  #{message}",
+                     "*"*70,
+                     ""
     end
 
     def report_failure
-      interface_puts
-      interface_puts "The affected method didn't cause test failures."
-      interface_puts
+      interface_puts "",
+                     "The affected method didn't cause test failures.",
+                     ""
     end
 
     def no_surviving_mutant

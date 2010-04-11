@@ -1,0 +1,22 @@
+=== 0.1.0 / 2010-04-11
+
+* Zombie speed is inversely proportional to number of tests, so numerous tests won't take to long.
+* Console based interface width is configurable.
+* There are multiple zombies, and can come from all directions.
+* Zombies lurch as they move.
+* Fixed nethack-style representations and messages being on the same line when using console based interface.
+* Gosu has to be installed manually, as it's not listed as a dependency.
+
+== 0.0.3 / 2009-12-13 7274dd9eeb09720a6be2afc5a261c878c2dfc7a1
+
+* GUI window size is configurable.
+* Users can choose between GUI and console based interface.
+* Ensured that excessive tests won't cause images to go off the screen.
+
+== 0.0.2 / 2009-12-08 0a888b2ea33481e078ab7640c9fd38dc6a23710f
+
+* Fix of brown paper bag bug: images weren't found when in gem form. 
+
+== 0.0.1 / 2009-12-07 4881d00aaa9e19491b191a5c35b351bffdd08212
+
+* Initial release

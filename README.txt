@@ -27,6 +27,8 @@ There are two alternatives for the interface. One is a GUI, while the other is a
 
 * Resource-intensive tests are especially slow in GUI mode for some reason. Run them in console mode (using --console) to make the program run faster.
 * Very occasionally, the program can crash, possibly because of threading issues. Please notify me if it becomes a consistent problem.
+* GUI version doesn't work in ruby 1.9.
+* Neither GUI nor console works on jruby for ruby version 1.9.
 
 == LICENSE:
 

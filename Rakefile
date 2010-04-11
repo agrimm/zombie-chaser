@@ -13,7 +13,7 @@ begin
     #gemspec.add_dependency('gosu') #TODO ask rubygems people to make it possible to specify an optional runtime dependency
     # Comment about optional runtime dependencies at https://oree.ch/2009/06/06/rubygems-dependencies.html argues you shouldn't list optional dependencies
     #gemspec.version = ZombieTestChaser::VERSION #Can't access ZombieTestChaser without starting up test/unit
-    gemspec.version = '0.0.3' # Check that it's consistent with ZombieTestChaser::VERSION
+    gemspec.version = '0.1.0' # Check that it's consistent with ZombieTestChaser::VERSION
     gemspec.homepage = "http://andrewjgrimm.wordpress.com/2009/11/08/declare-war-on-everything-with-chaser/"
   end
 rescue LoadError

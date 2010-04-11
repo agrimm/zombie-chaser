@@ -13,7 +13,7 @@ end
 
 class ZombieTestChaser < Chaser
 
-  VERSION = '0.0.3' #This should be used, but isn't, in Rakefile.
+  VERSION = '0.1.0' #This should be used, but isn't, in Rakefile.
 
   @@test_pattern = 'test/test_*.rb'
   @@tests_loaded = false

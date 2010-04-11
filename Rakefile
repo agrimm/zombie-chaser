@@ -20,7 +20,7 @@ rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install jeweler"
 end
 
+#Fixme work out how to change this to TestTask without problems
 task :test do
-  ruby "test/test_unit.rb"
+  ruby "-Ilib", "-Itest", "test/test_unit.rb"
 end
-

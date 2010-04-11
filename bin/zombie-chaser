@@ -1,9 +1,6 @@
 #!/usr/local/bin/ruby
 
-$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
-$:.unshift File.join(File.dirname(__FILE__), *%w[.. ui])
-require 'zombie_test_chaser'
-require 'ui'
+require 'zombie-chaser/zombie_test_chaser'
 require 'optparse'
 
 force = false

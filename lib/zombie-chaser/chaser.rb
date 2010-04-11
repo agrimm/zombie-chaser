@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'timeout'
-require 'world'
+require 'zombie-chaser/world'
 
 class String # :nodoc:
   def to_class

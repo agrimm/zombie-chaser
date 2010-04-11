@@ -1,5 +1,5 @@
-require "human"
-require "interface"
+require "zombie-chaser/human"
+require "zombie-chaser/interface"
 
 class World
   @interface_type = :gui_interface

@@ -2,9 +2,7 @@
 
 require "test/unit/collector/objectspace"
 require "test/unit/ui/testrunnermediator"
-require 'chaser'
-
-$: << 'lib' << 'test'
+require 'zombie-chaser/chaser'
 
 # Make sure test/unit doesn't swallow our timeout
 begin

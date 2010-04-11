@@ -1,7 +1,5 @@
-$:.unshift File.join(File.dirname(__FILE__), *%w[.. ui])
-
-require "test_unit_handler"
-require "ui" #For actor superclass
+require "zombie-chaser/test_unit_handler"
+require "zombie-chaser/ui" #For actor superclass
 
 class Human < Actor
   private_class_method :new

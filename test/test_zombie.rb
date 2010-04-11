@@ -1,7 +1,5 @@
-$: << "lib"
-
 require "test/unit"
-require "world"
+require "zombie-chaser/world"
 require "timeout"
 
 module TestHumanHelper

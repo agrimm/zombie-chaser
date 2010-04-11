@@ -1,2 +1,2 @@
-require "test/test_chaser.rb"
-require "test/test_zombie.rb"
+require "test_chaser.rb"
+require "test_zombie.rb"

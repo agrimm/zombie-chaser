@@ -1,10 +1,7 @@
-$:.unshift(File.dirname(__FILE__) + '/fixtures')
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-
 require 'test/unit/testcase'
 require 'test/unit' if $0 == __FILE__
-require 'zombie_test_chaser'
-require 'chased'
+require 'zombie-chaser/zombie_test_chaser'
+require 'fixtures/chased'
 
 class TestChaser < Chaser
   def rand(*args)

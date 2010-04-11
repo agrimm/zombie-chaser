@@ -15,10 +15,12 @@ There are two alternatives for the interface. One is a GUI, while the other is a
 
 == INSTALL:
 
-* sudo gem install zombie-chaser
+* [sudo] gem install zombie-chaser
+* [sudo] gem install gosu #Optional
+* [sudo] gem install test-unit #Optional
 
 * Don't use sudo if it's not applicable (can't or don't want to use root, or you're using Windows)
-* Gosu is listed as a dependency, so that it's installed by default. If you can't install it, tell rubygems to force installation without dependencies.
+* Gosu is not listed as a dependency, as otherwise jruby complains about gosu's absence before the program starts. Therefore you have to install it manually if you want a GUI interface.
 * If you're using ruby 1.9, you'll need to install the gem version of test-unit.
 
 == CURRENT BUGS:

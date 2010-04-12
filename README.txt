@@ -34,7 +34,7 @@ There are two alternatives for the interface. One is a GUI, while the other is a
 
 (The MIT License)
 
-Copyright (c) 2006-2009 Ryan Davis and Kevin Clark and Andrew Grimm,
+Copyright (c) 2006-2010 Ryan Davis and Kevin Clark and Andrew Grimm,
 Chris Lloyd, Dave Newman, Carl Woodward & Daniel Bogan.
 
 Permission is hereby granted, free of charge, to any person obtaining

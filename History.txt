@@ -1,6 +1,6 @@
 === 0.1.0 / 2010-04-11
 
-* Zombie speed is inversely proportional to number of tests, so numerous tests won't take to long.
+* Zombie speed is inversely proportional to number of tests, so numerous tests won't take too long.
 * Console based interface width is configurable.
 * There are multiple zombies, and can come from all directions.
 * Zombies lurch as they move.
